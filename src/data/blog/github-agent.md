@@ -23,3 +23,11 @@ To overcome this, I've added an AI agent to my project. This gets executed again
 The proof will be in the pie here, as I've purposefully (and possibly accidentally) left a huge amount of errors in this text.
 
 I'm expecting they'll be removed by the AI agent after my code is pushed and before the code is picked up on Vercel.
+
+I'm expecting they'll be removed by the AI agent after my code is pushed and before the code is picked ip on Vercel..
+
+looks good on the Github side:
+
+![Github AGent Success](/images/git_success.png)
+
+
