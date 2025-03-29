@@ -22,4 +22,4 @@ to overcome this, I've added an AI agent to my project. This gets executed agais
 
 The proof will be in the pie here, as i've purposefully (and possibly accidently) left a huge amount of errors in this text.
 
-I'm expecting they'll be removed by the AI agent after my code is pushed and before the code is picked ip on Vercel.
+I'm expecting they'll be removed by the AI agent after my code is pushed and before the code is picked ip on Vercel..
