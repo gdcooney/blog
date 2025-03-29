@@ -12,7 +12,7 @@ I should probably just edit these posts in some halfway decent editor, but there
 
 The obvious downside is that vi has no spell check or grammar check functions (that I'm aware of).
 
-To overcome this, I've added an AI agent to my project. This gets executed against all .md files that are committed to my blog repo. This automatically triggers and should tidy up all my spelling and grammar mistakes (of which the draft version of this post is riddled with).
+To overcome this, I've added an AI agent to my project. This gets executed against all .md files that are committed to my blog repo. This automatically triggers and should tidy up all my spelling and grammar mistakes (of which the draft version of this post is riddled).
 
 ## What we've done
 
@@ -20,14 +20,10 @@ To overcome this, I've added an AI agent to my project. This gets executed again
 2. Added [fix_markdown.py](/docs/fix_markdown.py) to project_root/.github/scripts/
 3. Added my OpenAI API key as a Repository Secret in GitHub.
 
-The proof will be in the pie here, as I've purposefully (and possibly accidentally) left a huge amount of errors in this text.
+The proof will be in the pudding here, as I've purposefully (and possibly accidentally) left a huge amount of errors in this text.
 
 I'm expecting they'll be removed by the AI agent after my code is pushed and before the code is picked up on Vercel.
 
-I'm expecting they'll be removed by the AI agent after my code is pushed and before the code is picked ip on Vercel..
+Looks good on the GitHub side:
 
-looks good on the Github side:
-
-![Github AGent Success](/images/git_success.png)
-
-
+![GitHub Agent Success](/images/git_success.png)
