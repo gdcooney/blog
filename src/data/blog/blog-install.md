@@ -2,7 +2,7 @@
 title: "Blog is live (kinda)"
 description: "It's been a long frustrating day"
 pubDatetime: 2025-03-29
-tags: ["blog", "astra"]
+tags: ["blog", "astro"]
 draft: false
 ---
 
