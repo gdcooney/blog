@@ -12,9 +12,9 @@ Welcome to my first blog post! This is an example of how to write posts using As
 
 ## How to Create Posts
 
-1. Create a new `.md` file in the `src/data/blog/` directory
-2. Add the required frontmatter at the top of the file
-3. Write your content in Markdown format
+1. Create a new `.md` file in the `src/data/blog/` directory.
+2. Add the required frontmatter at the top of the file.
+3. Write your content in Markdown format.
 
 ### Frontmatter Requirements
 
@@ -32,10 +32,10 @@ draft: false
 
 You can use all standard Markdown features:
 
-- **Bold text** for emphasis
-- *Italic text* for subtle emphasis
-- Lists (like this one)
-- Code blocks with syntax highlighting
+- **Bold text** for emphasis.
+- *Italic text* for subtle emphasis.
+- Lists (like this one).
+- Code blocks with syntax highlighting.
 
 ```javascript
 console.log("Hello, World!");
