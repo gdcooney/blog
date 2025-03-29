@@ -6,7 +6,7 @@ tags: ["blog", "astra"]
 draft: false
 ---
 
-# Astra is live (and some lessons learnt)
+# Astro is live (and some lessons learnt)
 
 I thought it'd be a super quick win to get this blog software running. it wasn't. I'm embarrassed it took as long as it did but here we are.
 
