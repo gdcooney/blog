@@ -1,0 +1,50 @@
+[
+  {
+    "id": "q1",
+    "question": "When did the First Fleet arrive in Australia?",
+    "options": [
+      {
+        "label": "1770",
+        "value": "A"
+      },
+      {
+        "label": "1788",
+        "value": "B"
+      },
+      {
+        "label": "1801",
+        "value": "C"
+      },
+      {
+        "label": "1901",
+        "value": "D"
+      }
+    ],
+    "correct": "B",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q2",
+    "question": "Which value is essential to Australian democracy?",
+    "options": [
+      {
+        "label": "Freedom of speech",
+        "value": "A"
+      },
+      {
+        "label": "Owning property",
+        "value": "B"
+      },
+      {
+        "label": "Speaking only English",
+        "value": "C"
+      },
+      {
+        "label": "Having a religion",
+        "value": "D"
+      }
+    ],
+    "correct": "A",
+    "isValueQuestion": true
+  }
+]

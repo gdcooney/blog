@@ -1,0 +1,242 @@
+[
+  {
+    "id": "q21",
+    "question": "What is the significance of the date January 1, 1901, in Australian history?",
+    "options": [
+      {
+        "label": "The end of World War I",
+        "value": "A"
+      },
+      {
+        "label": "The arrival of the First Fleet",
+        "value": "B"
+      },
+      {
+        "label": "The beginning of Federation",
+        "value": "C"
+      },
+      {
+        "label": "The establishment of the High Court",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q22",
+    "question": "What is one of the fundamental beliefs in Australian society?",
+    "options": [
+      {
+        "label": "That government must control religion",
+        "value": "A"
+      },
+      {
+        "label": "That the military runs the courts",
+        "value": "B"
+      },
+      {
+        "label": "That all Australians are equal under the law",
+        "value": "C"
+      },
+      {
+        "label": "That judges are elected by the people",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q23",
+    "question": "Which arm of government is responsible for interpreting laws in Australia?",
+    "options": [
+      {
+        "label": "The Executive",
+        "value": "A"
+      },
+      {
+        "label": "The Judiciary",
+        "value": "B"
+      },
+      {
+        "label": "The Legislature",
+        "value": "C"
+      },
+      {
+        "label": "The Cabinet",
+        "value": "D"
+      }
+    ],
+    "correct": "B",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q24",
+    "question": "What role does the Governor-General play in Australia?",
+    "options": [
+      {
+        "label": "Leader of the Senate",
+        "value": "A"
+      },
+      {
+        "label": "Appointed judge of the High Court",
+        "value": "B"
+      },
+      {
+        "label": "The King\u2019s representative",
+        "value": "C"
+      },
+      {
+        "label": "Leader of the opposition",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q25",
+    "question": "What is the purpose of jury service in Australia?",
+    "options": [
+      {
+        "label": "To vote on laws",
+        "value": "A"
+      },
+      {
+        "label": "To provide military training",
+        "value": "B"
+      },
+      {
+        "label": "To help decide the outcome of legal cases",
+        "value": "C"
+      },
+      {
+        "label": "To interview political candidates",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q26",
+    "question": "What is a local government in Australia responsible for?",
+    "options": [
+      {
+        "label": "Immigration and citizenship",
+        "value": "A"
+      },
+      {
+        "label": "Foreign policy",
+        "value": "B"
+      },
+      {
+        "label": "Rubbish collection and local roads",
+        "value": "C"
+      },
+      {
+        "label": "National defense",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q27",
+    "question": "What is the main purpose of elections in Australia?",
+    "options": [
+      {
+        "label": "To test people's knowledge",
+        "value": "A"
+      },
+      {
+        "label": "To choose members of Parliament",
+        "value": "B"
+      },
+      {
+        "label": "To change the Constitution",
+        "value": "C"
+      },
+      {
+        "label": "To register for taxes",
+        "value": "D"
+      }
+    ],
+    "correct": "B",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q28",
+    "question": "What is one reason immigrants must understand Australian values?",
+    "options": [
+      {
+        "label": "To get better jobs",
+        "value": "A"
+      },
+      {
+        "label": "To fit into Australian society",
+        "value": "B"
+      },
+      {
+        "label": "To serve in the army",
+        "value": "C"
+      },
+      {
+        "label": "To become a mayor",
+        "value": "D"
+      }
+    ],
+    "correct": "B",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q29",
+    "question": "What are referendums used for in Australia?",
+    "options": [
+      {
+        "label": "To elect the Prime Minister",
+        "value": "A"
+      },
+      {
+        "label": "To declare war",
+        "value": "B"
+      },
+      {
+        "label": "To change the Constitution",
+        "value": "C"
+      },
+      {
+        "label": "To appoint judges",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q30",
+    "question": "What is the role of the media in a democracy like Australia?",
+    "options": [
+      {
+        "label": "To entertain the public",
+        "value": "A"
+      },
+      {
+        "label": "To serve as a voice of the government",
+        "value": "B"
+      },
+      {
+        "label": "To inform people and hold governments accountable",
+        "value": "C"
+      },
+      {
+        "label": "To decide election outcomes",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": true
+  }
+]

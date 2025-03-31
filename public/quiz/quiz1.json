@@ -1,0 +1,123 @@
+[
+  {
+    "id": "q1",
+    "question": "What is the rule of law?",
+    "options": [
+      { "label": "Everyone must follow the law, including leaders.", "value": "A" },
+      { "label": "Only politicians and police must follow the law.", "value": "B" },
+      { "label": "Laws only apply to criminals.", "value": "C" },
+      { "label": "Laws can be ignored by public servants.", "value": "D" }
+    ],
+    "correct": "A",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q2",
+    "question": "Which of the following is a responsibility of Australian citizens?",
+    "options": [
+      { "label": "To avoid voting in elections", "value": "A" },
+      { "label": "To obey the law", "value": "B" },
+      { "label": "To own property", "value": "C" },
+      { "label": "To apply for government jobs", "value": "D" }
+    ],
+    "correct": "B",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q3",
+    "question": "What are Australia’s three levels of government?",
+    "options": [
+      { "label": "Federal, State/Territory, Local", "value": "A" },
+      { "label": "Executive, Judicial, Legislative", "value": "B" },
+      { "label": "National, Regional, Global", "value": "C" },
+      { "label": "Urban, Rural, Remote", "value": "D" }
+    ],
+    "correct": "A",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q4",
+    "question": "Who represents the King of Australia in the Commonwealth Parliament?",
+    "options": [
+      { "label": "The Prime Minister", "value": "A" },
+      { "label": "The Governor-General", "value": "B" },
+      { "label": "The Chief Justice", "value": "C" },
+      { "label": "The Opposition Leader", "value": "D" }
+    ],
+    "correct": "B",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q5",
+    "question": "What does freedom of speech mean in Australia?",
+    "options": [
+      { "label": "You can say anything without consequences", "value": "A" },
+      { "label": "You can speak freely while respecting others’ rights", "value": "B" },
+      { "label": "Only politicians can speak in public", "value": "C" },
+      { "label": "Speech is only free on social media", "value": "D" }
+    ],
+    "correct": "B",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q6",
+    "question": "When did the First Fleet arrive in Australia?",
+    "options": [
+      { "label": "1770", "value": "A" },
+      { "label": "1788", "value": "B" },
+      { "label": "1801", "value": "C" },
+      { "label": "1901", "value": "D" }
+    ],
+    "correct": "B",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q7",
+    "question": "What is the Australian national language?",
+    "options": [
+      { "label": "Mandarin", "value": "A" },
+      { "label": "Indigenous languages", "value": "B" },
+      { "label": "English", "value": "C" },
+      { "label": "Hindi", "value": "D" }
+    ],
+    "correct": "C",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q8",
+    "question": "How does Australia’s compulsory voting system work?",
+    "options": [
+      { "label": "Citizens can vote if they want", "value": "A" },
+      { "label": "Only public servants must vote", "value": "B" },
+      { "label": "Voting is optional for everyone", "value": "C" },
+      { "label": "Citizens must enrol and vote in elections", "value": "D" }
+    ],
+    "correct": "D",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q9",
+    "question": "Who leads the federal government of Australia?",
+    "options": [
+      { "label": "The Premier", "value": "A" },
+      { "label": "The Governor-General", "value": "B" },
+      { "label": "The Chief Justice", "value": "C" },
+      { "label": "The Prime Minister", "value": "D" }
+    ],
+    "correct": "D",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q10",
+    "question": "What is the significance of January 26th in Australia?",
+    "options": [
+      { "label": "The day Australia became a republic", "value": "A" },
+      { "label": "The start of the federation", "value": "B" },
+      { "label": "The day the First Fleet arrived", "value": "C" },
+      { "label": "The end of World War II", "value": "D" }
+    ],
+    "correct": "C",
+    "isValueQuestion": false
+  }
+]
+

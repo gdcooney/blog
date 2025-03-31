@@ -1,0 +1,242 @@
+[
+  {
+    "id": "q11",
+    "question": "What is the name of Australia's national anthem?",
+    "options": [
+      {
+        "label": "Advance Australia Fair",
+        "value": "A"
+      },
+      {
+        "label": "Waltzing Matilda",
+        "value": "B"
+      },
+      {
+        "label": "God Save the Queen",
+        "value": "C"
+      },
+      {
+        "label": "We Are Australian",
+        "value": "D"
+      }
+    ],
+    "correct": "A",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q12",
+    "question": "What is a responsibility of Australian citizens aged 18 years or older?",
+    "options": [
+      {
+        "label": "To serve in the military",
+        "value": "A"
+      },
+      {
+        "label": "To vote in federal and state elections",
+        "value": "B"
+      },
+      {
+        "label": "To speak only English",
+        "value": "C"
+      },
+      {
+        "label": "To join a political party",
+        "value": "D"
+      }
+    ],
+    "correct": "B",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q13",
+    "question": "Which Australian state or territory is not located on the mainland?",
+    "options": [
+      {
+        "label": "New South Wales",
+        "value": "A"
+      },
+      {
+        "label": "Victoria",
+        "value": "B"
+      },
+      {
+        "label": "Tasmania",
+        "value": "C"
+      },
+      {
+        "label": "Queensland",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q14",
+    "question": "What does 'mateship' mean in Australian culture?",
+    "options": [
+      {
+        "label": "Having business partnerships",
+        "value": "A"
+      },
+      {
+        "label": "Loyalty and friendship",
+        "value": "B"
+      },
+      {
+        "label": "Legal guardianship",
+        "value": "C"
+      },
+      {
+        "label": "Family relations",
+        "value": "D"
+      }
+    ],
+    "correct": "B",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q15",
+    "question": "What is the name of the document that outlines Australia's system of government?",
+    "options": [
+      {
+        "label": "The Magna Carta",
+        "value": "A"
+      },
+      {
+        "label": "The Constitution",
+        "value": "B"
+      },
+      {
+        "label": "The Bill of Rights",
+        "value": "C"
+      },
+      {
+        "label": "The Act of Federation",
+        "value": "D"
+      }
+    ],
+    "correct": "B",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q16",
+    "question": "How do Australians show support for freedom of religion?",
+    "options": [
+      {
+        "label": "By making it mandatory to attend church",
+        "value": "A"
+      },
+      {
+        "label": "By allowing everyone to choose their religion or none",
+        "value": "B"
+      },
+      {
+        "label": "By banning non-Christian religions",
+        "value": "C"
+      },
+      {
+        "label": "By celebrating only Christian holidays",
+        "value": "D"
+      }
+    ],
+    "correct": "B",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q17",
+    "question": "What is the name of Australia's federal parliament?",
+    "options": [
+      {
+        "label": "The Royal Assembly",
+        "value": "A"
+      },
+      {
+        "label": "The House of Lords",
+        "value": "B"
+      },
+      {
+        "label": "The Commonwealth Parliament",
+        "value": "C"
+      },
+      {
+        "label": "The National Assembly",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q18",
+    "question": "Who do Australians vote for in a federal election?",
+    "options": [
+      {
+        "label": "Judges",
+        "value": "A"
+      },
+      {
+        "label": "The King",
+        "value": "B"
+      },
+      {
+        "label": "Members of Parliament",
+        "value": "C"
+      },
+      {
+        "label": "Local council staff",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": false
+  },
+  {
+    "id": "q19",
+    "question": "What principle ensures that no group or individual is above the law in Australia?",
+    "options": [
+      {
+        "label": "Majority rule",
+        "value": "A"
+      },
+      {
+        "label": "Freedom of speech",
+        "value": "B"
+      },
+      {
+        "label": "The rule of law",
+        "value": "C"
+      },
+      {
+        "label": "Parliamentary privilege",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": true
+  },
+  {
+    "id": "q20",
+    "question": "What does ANZAC Day commemorate?",
+    "options": [
+      {
+        "label": "The founding of Australia",
+        "value": "A"
+      },
+      {
+        "label": "The arrival of the First Fleet",
+        "value": "B"
+      },
+      {
+        "label": "Australians who served and died in wars",
+        "value": "C"
+      },
+      {
+        "label": "The establishment of Federation",
+        "value": "D"
+      }
+    ],
+    "correct": "C",
+    "isValueQuestion": false
+  }
+]
