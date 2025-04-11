@@ -1,0 +1,38 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+title: "Australian Citizenship Practice Test – 30 Questions"
+description: "Take this free Australian Citizenship Practice Test based on the official 'Our Common Bond' resource. Fully interactive with scoring and feedback."
+---
+
+<Layout>
+  <head>
+    <title>Australian Citizenship Practice Test – 30 Questions</title>
+    <meta name="description" content="Take this free Australian Citizenship Practice Test based on the official 'Our Common Bond' resource. Fully interactive with scoring and feedback.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Australian Citizenship Practice Test – 30 Questions">
+    <meta property="og:description" content="Take this free citizenship quiz to prepare for the Australian Citizenship Test. Based on the official 'Our Common Bond' testable section.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com/quiz">
+    <meta property="og:image" content="https://yourdomain.com/images/og-citizenship.jpg">
+  </head>
+
+  <main class="max-w-3xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4">🇦🇺 Australian Citizenship Quiz</h1>
+    <p class="mb-6 text-lg">Test your knowledge with this 30-question practice quiz based on the official <strong>Our Common Bond</strong> material.</p>
+
+    <div id="quiz-section">
+      <div id="quiz-container">Loading questions...</div>
+
+	<div id="quiz-results" class="hidden mt-8 bg-white p-6 rounded shadow-lg border border-gray-300 relative z-10 text-black">
+
+        <h2 class="text-xl font-semibold">Your Results</h2>
+        <p id="score" class="font-medium mt-2"></p>
+        <div id="feedback" class="mt-2 text-sm text-gray-700"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="/js/citizenship-quiz.js"></script>
+</Layout>
+
