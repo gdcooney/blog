@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config";
+import vercel from "@astrojs/vercel/serverless";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import remarkToc from "remark-toc";
@@ -7,16 +8,16 @@ import { SITE } from "./src/config";
 
 // https://astro.build/config
 export default defineConfig({
+  adapter: vercel(), // ✅ Required for Vercel serverless deployment
   site: SITE.website,
   integrations: [
     sitemap({
-      filter: page => SITE.showArchives || !page.endsWith("/archives"),
+      filter: (page) => SITE.showArchives || !page.endsWith("/archives"),
     }),
   ],
   markdown: {
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
     shikiConfig: {
-      // For more themes, visit https://shiki.style/themes
       themes: { light: "min-light", dark: "night-owl" },
       wrap: true,
     },
@@ -28,8 +29,6 @@ export default defineConfig({
     },
   },
   image: {
-    // Used for all Markdown images; not configurable per-image
-    // Used for all `<Image />` and `<Picture />` components unless overridden with a prop
     experimentalLayout: "responsive",
   },
   experimental: {
@@ -38,3 +37,4 @@ export default defineConfig({
     preserveScriptOrder: true,
   },
 });
+
