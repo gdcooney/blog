@@ -320,7 +320,6 @@ All notable changes to this project will be documented in this file. See [standa
 * update tailwind base styles config ([#116](https://github.com/satnaing/astro-paper/issues/116)) ([98a2bb6](https://github.com/satnaing/astro-paper/commit/98a2bb682af2773d6af7782a6592e9b9fab79b3b))
 * update title of the blog nowrap ([2df71b9](https://github.com/satnaing/astro-paper/commit/2df71b9b4587c7a2438f483e8365ef5b8a502ce7))
 
-## [2.3.0](https://github.com/satnaing/astro-paper/compare/v2.2.0...v2.3.0) (2023-05-15)
 
 
 ### Features
