@@ -1,0 +1,44 @@
+---
+const now = new Date().toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM
+---
+<form method="post" action="/api/save-log" enctype="application/x-www-form-urlencoded" class="flex flex-col gap-4 max-w-xl">
+  <label class="flex flex-col">
+    <span class="font-medium">Date</span>
+    <input type="datetime-local" name="datetime" value={now} class="input" required />
+  </label>
+
+  <label class="flex flex-col">
+    <span class="font-medium">Mood</span>
+    <select name="mood" class="input">
+      <option value="😀">😀 Great</option>
+      <option value="🙂">🙂 Good</option>
+      <option value="😐">😐 Okay</option>
+      <option value="😔">😔 Low</option>
+      <option value="😣">😣 Bad</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col">
+    <span class="font-medium">Sleep (hours)</span>
+    <input type="number" name="sleep" step="0.5" min="0" max="24" class="input" />
+  </label>
+
+  <label class="flex flex-col">
+    <span class="font-medium">Exercise</span>
+    <input type="text" name="exercise" placeholder="e.g. Boxing, Walk" class="input" />
+  </label>
+
+  <label class="flex flex-col">
+    <span class="font-medium">Food</span>
+    <input type="text" name="food" placeholder="e.g. salad, protein bar" class="input" />
+  </label>
+
+  <label class="flex flex-col">
+    <span class="font-medium">Notes</span>
+    <textarea name="notes" rows="4" class="input"></textarea>
+  </label>
+
+  <button type="submit" name="submit" value="1" class="btn mt-4">Save Log</button>
+
+</form>
+
