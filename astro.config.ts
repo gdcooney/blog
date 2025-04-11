@@ -8,7 +8,7 @@ import { SITE } from "./src/config";
 
 // https://astro.build/config
 export default defineConfig({
-  adapter: vercel(), // ✅ Required for Vercel serverless deployment
+  adapter: vercel({}), // ✅ Required for Vercel serverless deployment
   site: SITE.website,
   integrations: [
     sitemap({
