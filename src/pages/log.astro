@@ -3,7 +3,10 @@ import Layout from "@/layouts/Layout.astro";
 import { SITE } from "@/config.mjs";
 
 const pageTitle = "Log Something";
-const LOG_ENDPOINT = import.meta.env.PUBLIC_LOG_ENDPOINT!;
+
+// Handle undefined env vars gracefully
+const LOG_ENDPOINT = import.meta.env.PUBLIC_LOG_ENDPOINT ?? "";
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? "";
 ---
 
 <Layout title={pageTitle} description="Capture a new log entry">
@@ -11,7 +14,7 @@ const LOG_ENDPOINT = import.meta.env.PUBLIC_LOG_ENDPOINT!;
     <div class="content">
       <h1 class="h1">📝 {pageTitle}</h1>
 
-      <form id="log-form" class="space-y-4" data-endpoint={import.meta.env.PUBLIC_LOG_ENDPOINT} data-key={import.meta.env.PUBLIC_SUPABASE_ANON_KEY}>
+      <form id="log-form" class="space-y-4" data-endpoint={LOG_ENDPOINT} data-key={SUPABASE_ANON_KEY}>
         <label>
           Category:
           <input name="category" type="text" required class="input" />
@@ -54,42 +57,63 @@ const LOG_ENDPOINT = import.meta.env.PUBLIC_LOG_ENDPOINT!;
     </div>
   </section>
 
-  <script>
+  <script type="module" is:inline>
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('log-form');
       const msg = document.getElementById('response-msg');
+
+      if (!form) return;
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const formData = new FormData(form);
 
+        const endpoint = form.dataset.endpoint;
+        const anonKey = form.dataset.key;
+
+        if (!endpoint || !anonKey) {
+          alert("Missing endpoint or key.");
+          return;
+        }
+
         const payload = {
           category: formData.get("category"),
-          tags: formData.get("tags")?.split(",").map(t => t.trim()).filter(Boolean),
+          tags: String(formData.get("tags") || "")
+            .split(",")
+            .map(t => t.trim())
+            .filter(Boolean),
           notes: formData.get("notes"),
           data: {
-            sleep: parseFloat(formData.get("sleep") || 0),
+            sleep: parseFloat(formData.get("sleep") || "0"),
             mood: formData.get("mood"),
             exercise: formData.get("exercise"),
-            food: formData.get("food")?.split(",").map(f => f.trim()).filter(Boolean)
-          }
+            food: String(formData.get("food") || "")
+              .split(",")
+              .map(f => f.trim())
+              .filter(Boolean),
+          },
         };
-	const endpoint = form.dataset.endpoint;
-        const anonKey = form.dataset.key;
-	const res = await fetch(endpoint, {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + anonKey
-	 },
-          body: JSON.stringify(payload)
-        });
 
-        if (res.ok) {
-          form.reset();
-          msg.classList.remove("hidden");
-        } else {
-          alert("⚠️ Error submitting log.");
+        try {
+          const res = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + anonKey,
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (res.ok) {
+            form.reset();
+            if (msg) msg.classList.remove("hidden");
+          } else {
+            console.error(await res.text());
+            alert("⚠️ Error submitting log.");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("⚠️ Request failed.");
         }
       });
     });
