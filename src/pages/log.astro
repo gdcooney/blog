@@ -34,23 +34,8 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? "";
           </label>
 
           <label class="block">
-            <span class="block text-sm font-medium">Sleep (hrs):</span>
-            <input name="sleep" type="number" step="0.1" class="w-full px-4 py-2 rounded border border-outline bg-transparent text-white" />
-          </label>
-
-          <label class="block">
             <span class="block text-sm font-medium">Mood:</span>
             <input name="mood" type="text" class="w-full px-4 py-2 rounded border border-outline bg-transparent text-white" />
-          </label>
-
-          <label class="block">
-            <span class="block text-sm font-medium">Exercise:</span>
-            <input name="exercise" type="text" class="w-full px-4 py-2 rounded border border-outline bg-transparent text-white" />
-          </label>
-
-          <label class="block">
-            <span class="block text-sm font-medium">Food (comma-separated):</span>
-            <input name="food" type="text" class="w-full px-4 py-2 rounded border border-outline bg-transparent text-white" />
           </label>
 
           <button type="submit" class="mt-4 bg-accent text-white px-6 py-2 rounded hover:bg-accent-dark transition">
@@ -90,13 +75,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? "";
             .filter(Boolean),
           notes: formData.get("notes"),
           data: {
-            sleep: parseFloat(formData.get("sleep") || "0"),
             mood: formData.get("mood"),
-            exercise: formData.get("exercise"),
-            food: String(formData.get("food") || "")
-              .split(",")
-              .map(f => f.trim())
-              .filter(Boolean),
           },
         };
 
