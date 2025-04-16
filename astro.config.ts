@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config";
+import path from "path";
 //import vercel from "@astrojs/vercel/serverless";
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
@@ -27,10 +28,15 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss()],
-    optimizeDeps: {
-      exclude: ["@resvg/resvg-js"],
+  plugins: [tailwindcss()],
+  optimizeDeps: {
+    exclude: ["@resvg/resvg-js"],
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve("./src"),
     },
+   },
   },
   image: {
     experimentalLayout: "responsive",
