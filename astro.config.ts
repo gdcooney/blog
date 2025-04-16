@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import { fileURLToPath } from "url";
 import path from "path";
 //import vercel from "@astrojs/vercel/serverless";
-import viteConfig from './vite.config.ts';
+import viteConfig from './vite.config';
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
