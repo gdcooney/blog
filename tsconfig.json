@@ -6,7 +6,6 @@
     // Add some common defaults usually inherited:
     "target": "ESNext",
     "module": "NodeNext", // Or ESNext, check Astro defaults
-    "moduleResolution": "NodeNext", // Or Bundler, check Astro defaults
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
