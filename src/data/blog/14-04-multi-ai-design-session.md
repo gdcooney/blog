@@ -20,11 +20,11 @@ I wasn't initially planning on designing my UI with it, but I'm super glad I tri
 
 ## The Process
 
-A couple of weeks back, with ChatGPT help, i created a design for a system I'm building. This afternoon, I revisited the chat session where we'd previoulsy fleshed out most of the system design and asked ChatGPT to create a new user specification / workflow document. ChatGPT being the helpful robot he is, eagaly obliged. 
+A couple of weeks back, with ChatGPT help, i created a design for a system I'm building. This afternoon, I revisited the chat session where we'd previously fleshed out most of the system design and asked ChatGPT to create a new user specification / workflow document. ChatGPT being the helpful robot he is, eagaly obliged. 
 
 I then gave Gemini 2.5 my solution architecture document and the user specification document and asked for help designing my UI.
 
-Gemini, ChatGPT and I iterated through a series of followup design questions and eventaully agreed on the UI design. Now came the fun bit.
+Gemini, ChatGPT and I iterated through a series of followup design questions and eventually agreed on the UI design. Now came the fun bit.
 
 One by one, Gemini outlined each of the UI workflows. We made some tweaks, agreed, and then he gave me a detailed description of the UI componnets we needed to build.  My task was then to sketch the design on paper. 
 
@@ -36,5 +36,5 @@ I take the component sketch to Gemini, and we review. I ask Gemini for an update
 
 ChatGPT creates the final version which I save for the next step. So far I've created 10 - 12 UI components covering 3 workflows. In most cases GPT produced what I needed in one prompt. Magic!
 
-Once I complete all the required workflows, I'll work out how to get my UI built. Gemini is suggesing I do this by hand, but thats not going to happen! Ideally we find a AI assist for creating a Figma layout. I've been looking for a use case for trying v0 or a similar tool - this might be the one. Stay Tuned!
+Once I complete all the required workflows, I'll work out how to get my UI built. Gemini is suggesing I do this by hand, but that's not going to happen! Ideally we find a AI assist for creating a Figma layout. I've been looking for a use case for trying v0 or a similar tool - this might be the one. Stay Tuned!
 

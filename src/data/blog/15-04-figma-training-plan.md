@@ -8,13 +8,13 @@ draft: false
 
 # Figma Training Plan
 
-I'm not much of a developer. I know a little about a few different things, but not anywhere near where I need to be for creating nice looking aplications. I'd consider myself more of a bad back end developer and have historically avoided anything user facing. Honestly, UI design and positioning stuff with CSS frustrates me to the point of tears. 
+I'm not much of a developer. I know a little about a few different things, but not anywhere near where I need to be for creating nice looking applications. I'd consider myself more of a bad back end developer and have historically avoided anything user facing. Honestly, UI design and positioning stuff with CSS frustrates me to the point of tears. 
 
-There are a lot of tools that can help with UI / UX design. Unfortunately none seem to do exactly what I'd  hoped. I half expected that I'd be able to take my UI mock ups, paste them into some ChatGPT style interface and have aworking UI built by robots automatically. Unfortunatelt, I couldn't find anything that looks like it'll do what I need. I'll keep an eye out tho as the speed that things are moving currenty, I wouldn't be suprised if someone comes out with an AI driven tool in the next few days.  There are a few tools around that'll do bits of the job, but it looks like they either won't work for anything complex, or would require using multiple tools to get where I need to go.  So, it looks like I'm going to have to learn Figma and do it myself.  I figured this is probably a decent use of my time as any design skills I pickup will certainly come in handy for other projects.
+There are a lot of tools that can help with UI / UX design. Unfortunately none seem to do exactly what I'd  hoped. I half expected that I'd be able to take my UI mock ups, paste them into some ChatGPT style interface and have aworking UI built by robots automatically. Unfortunatelt, I couldn't find anything that looks like it'll do what I need. I'll keep an eye out tho as the speed that things are moving currently, I wouldn't be surprised if someone comes out with an AI driven tool in the next few days.  There are a few tools around that'll do bits of the job, but it looks like they either won't work for anything complex, or would require using multiple tools to get where I need to go.  So, it looks like I'm going to have to learn Figma and do it myself.  I figured this is probably a decent use of my time as any design skills I pickup will certainly come in handy for other projects.
 
 So my guy ChatGPT has given me an outline of some self paced training which I'll work through over the next couple of weeks. My plan is to learn figma well enough to knowck up a working prototype for my application between now and the end of my almost 2 week Easter / Anzac day extended holiday.
 
-The ChatGPT proposed training scedule is outlined below. I'm feeling excited to get into it!  
+The ChatGPT proposed training schedule is outlined below. I'm feeling excited to get into it!  
 
 ---
 

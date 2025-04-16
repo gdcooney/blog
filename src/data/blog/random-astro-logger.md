@@ -19,4 +19,4 @@ I needed three files for this:
 
 Currently, this is writing .md files to content/logs. I think I'll update this process to write to either S3 or Github so that I can create and access logs from anywhere.
 
-I'll also need to work out a better format for the markdown files, or potentially define a more AI friendly fomat.
+I'll also need to work out a better format for the markdown files, or potentially define a more AI friendly format.

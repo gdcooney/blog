@@ -1,0 +1,3 @@
+extends: substitution
+message: "'%s' may be a misspelling"
+level: warning
