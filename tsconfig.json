@@ -1,6 +1,6 @@
 {
-  // "extends": "astro/tsconfigs/strict", // <-- REMOVED/COMMENTED OUT
-  "include": [".astro/types.d.ts", "**/*"],
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "src"],
   "exclude": ["dist", "public/pagefind"],
   "compilerOptions": {
     // Add some common defaults usually inherited:
