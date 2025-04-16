@@ -1,7 +1,7 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
+import Layout from "src/layouts/Layout.astro";
+import Header from "src/components/Header.astro";
+import Footer from "src/components/Footer.astro";
 ---
 
 <Layout>
@@ -36,45 +36,48 @@ import Footer from "@/components/Footer.astro";
         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
       </div>
     </form>
+<script>
+  const form = document.getElementById("blog-form");
+  if (form instanceof HTMLFormElement) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    <script>
-      const form = document.getElementById("blog-form");
+      const titleEl = document.getElementById("title");
+      const tagsEl = document.getElementById("tags");
       const contentEl = document.getElementById("content");
 
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+      if (
+        !(titleEl instanceof HTMLInputElement) ||
+        !(tagsEl instanceof HTMLInputElement) ||
+        !(contentEl instanceof HTMLTextAreaElement)
+      ) return;
 
-        const title = document.getElementById("title").value;
-        const tags = document.getElementById("tags").value;
-        const content = contentEl.value;
+      const payload = {
+        title: titleEl.value,
+        tags: tagsEl.value.split(",").map(tag => tag.trim()).filter(Boolean),
+        notes: "",
+        data: { content: contentEl.value }
+      };
 
-        const slug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
-        const filename = `${slug}.md`;
-
-        const res = await fetch("/api/get-presigned-url", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ filename })
-        });
-
-        const { url } = await res.json();
-
-        const fullContent = `<!-- HUMAN -->\n${content}\n\n<!-- METADATA -->\nTags: ${tags}`;
-
-        const upload = await fetch(url, {
-          method: "PUT",
-          headers: { "Content-Type": "text/markdown" },
-          body: fullContent
-        });
-
-        if (upload.ok) {
-          alert("Draft uploaded!");
-          form.reset();
-        } else {
-          alert("Upload failed.");
-        }
+      const res = await fetch("/api/get-presigned-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       });
-    </script>
+
+      if (res.ok) {
+        form.reset();
+        alert("Log submitted successfully!");
+      } else {
+        alert("Failed to submit log.");
+      }
+    });
+  } else {
+    console.error("Form not found or is not a form element");
+  }
+</script>
+
+
   </body>
   <Footer />
 </Layout>
