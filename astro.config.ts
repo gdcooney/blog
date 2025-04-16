@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config";
+import { fileURLToPath } from "url";
 import path from "path";
 //import vercel from "@astrojs/vercel/serverless";
 import vercel from "@astrojs/vercel";
@@ -34,7 +35,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve("./src"),
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
    },
   },
