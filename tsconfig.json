@@ -1,19 +1,17 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "src"],
+  "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist", "public/pagefind"],
   "compilerOptions": {
-    // Add some common defaults usually inherited:
     "target": "ESNext",
-    "module": "NodeNext", // Or ESNext, check Astro defaults
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true, // Matches the 'strict' preset name
+    "strict": true,
 
-    // Keep your custom options:
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
@@ -22,3 +20,4 @@
     "jsxImportSource": "react"
   }
 }
+
