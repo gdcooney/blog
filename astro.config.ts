@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import { fileURLToPath } from "url";
 import path from "path";
 //import vercel from "@astrojs/vercel/serverless";
+import viteConfig from './vite.config.ts';
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
@@ -28,16 +29,7 @@ export default defineConfig({
       wrap: true,
     },
   },
-  vite: {
-  optimizeDeps: {
-    exclude: ["@resvg/resvg-js"],
-  },
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-    },
-   },
-  },
+  vite: viteConfig,
   image: {
     experimentalLayout: "responsive",
   },
