@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
-import vercel from "@astrojs/vercel/serverless";
+//import vercel from "@astrojs/vercel/serverless";
+import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import remarkToc from "remark-toc";
@@ -10,6 +11,9 @@ import { SITE } from "./src/config";
 export default defineConfig({
   adapter: vercel({}), // ✅ Required for Vercel serverless deployment
   site: SITE.website,
+  server: {
+    host: true, // Bind to 0.0.0.0 so it’s accessible across your network
+  },
   integrations: [
     sitemap({
       filter: (page) => SITE.showArchives || !page.endsWith("/archives"),

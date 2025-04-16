@@ -12,7 +12,7 @@ I had a plan for a Saturday night nerd out. I thought it was a simple plan, a pl
 
 ## Background
 
-Up until last night my Astro blog was displaying only static content. Everything was displaying nicely locally, and when pushed to Git it would depoy on Vercel ok. Static content = OK.
+Up until last night my Astro blog was displaying only static content. Everything was displaying nicely locally, and when pushed to Git it would deploy on Vercel ok. Static content = OK.
 
 I have a basic form working to submit data to a Supabase database via a API endpoint. This is an ealy test for a wider idea I have going on. It looks awful, but did the basic function I needed.
 
@@ -41,7 +41,7 @@ git commit -m "new logging interface built. deploy to vercel"
 git push origin master
 ```
 
-The commit and push goes fine, then we hit errors when Vercel tries to deploy things. The errors suggest we're missing adapters for rendering the react componnets on Vercel. This seemed like it sould have been an easy fix - add the required module and redeploy.  
+The commit and push goes fine, then we hit errors when Vercel tries to deploy things. The errors suggest we're missing adapters for rendering the react componnets on Vercel. This seemed like it should have been an easy fix - add the required module and redeploy.  
 
 Now we get this warning on the local dev environment (everything still runs OK):
 
@@ -59,7 +59,7 @@ Cannot read properties of undefined (reading 'toString')
 
 ## The fix
 
-Well, there wasn't one. Sadly. I went around in circles for clsoe to 3 hours. I reinstalled modules, changed adapters, edited probably 70% of the layout files and Astro config files. It just would not work.
+Well, there wasn't one. Sadly. I went around in circles for close to 3 hours. I reinstalled modules, changed adapters, edited probably 70% of the layout files and Astro config files. It just would not work.
 I got rage. I started questioning my sanity. I got stubborn. I got a little bit snippy to the AI. I was ready to burn the Astro blog to the ground! Eventually after about the 5th iteration of a similar change, i decided enough was enough. I went to bed hoping something would come to me the next day.   
 
 It all seemed so simple after a decent sleep. I'll keep Astro for a blog server only. I'll find some other platform for anything that requires SSR. Backup restored, current form updated and deployed to both local dev and Vercel.

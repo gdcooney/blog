@@ -26,3 +26,8 @@ pnpm-debug.log*
 # pagefind
 
 public/pagefind
+
+# Spell / grammar check log
+vale.log
+aws.key
+.vercel
