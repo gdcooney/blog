@@ -1,0 +1,162 @@
+
+ [4msrc/data/blog/github-agent.md[0m
+ 11:82   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+ 13:22   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+ 13:85   [34msuggestion[0m  Try to avoid using 'I'm'.       write-good.E-Prime 
+ 15:103  [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime 
+ 15:103  [33mwarning[0m     'are committed' may be passive  write-good.Passive 
+                     voice. Use active voice if you                     
+                     can.                                               
+ 15:259  [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+ 15:259  [33mwarning[0m     'is riddled' may be passive     write-good.Passive 
+                     voice. Use active voice if you                     
+                     can.                                               
+ 23:16   [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime 
+ 23:96   [33mwarning[0m     'huge' is a weasel word!        write-good.Weasel  
+ 25:1    [34msuggestion[0m  Try to avoid using 'I'm'.       write-good.E-Prime 
+ 25:23   [33mwarning[0m     'be removed' may be passive     write-good.Passive 
+                     voice. Use active voice if you                     
+                     can.                                               
+ 25:23   [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime 
+ 25:64   [33mwarning[0m     'is pushed' may be passive      write-good.Passive 
+                     voice. Use active voice if you                     
+                     can.                                               
+ 25:64   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+ 25:94   [33mwarning[0m     'is picked' may be passive      write-good.Passive 
+                     voice. Use active voice if you                     
+                     can.                                               
+ 25:94   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+
+
+ [4msrc/data/blog/blog-install.md[0m
+ 9:9     [34msuggestion[0m  Try to avoid using 'is'.      write-good.E-Prime  
+ 11:16   [34msuggestion[0m  Try to avoid using 'be'.      write-good.E-Prime  
+ 11:75   [34msuggestion[0m  Try to avoid using 'wasn't'.  write-good.E-Prime  
+ 11:83   [34msuggestion[0m  Try to avoid using 'I'm'.     write-good.E-Prime  
+ 11:138  [34msuggestion[0m  Try to avoid using 'are'.     write-good.E-Prime  
+ 18:18   [34msuggestion[0m  Try to avoid using 'been'.    write-good.E-Prime  
+ 18:176  [34msuggestion[0m  Try to avoid using 'I'm'.     write-good.E-Prime  
+ 34:16   [34msuggestion[0m  Try to avoid using 'been'.    write-good.E-Prime  
+ 41:23   [34msuggestion[0m  Try to avoid using 'been'.    write-good.E-Prime  
+ 43:63   [33mwarning[0m     'It was' is too wordy.        write-good.TooWordy 
+ 43:66   [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+
+
+ [4msrc/data/blog/my-first-post.md[0m
+ 11:37  [34msuggestion[0m  Try to avoid using 'is'.  write-good.E-Prime 
+
+
+ [4msrc/data/blog/13-04-whatsapp-starter.md[0m
+ 9:179   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+ 9:182   [33mwarning[0m     'quite' is a weasel word!       write-good.Weasel  
+ 11:1    [34msuggestion[0m  Try to avoid using 'I'm'.       write-good.E-Prime 
+ 19:3    [33mwarning[0m     'Is deployed' may be passive    write-good.Passive 
+                     voice. Use active voice if you                     
+                     can.                                               
+ 19:3    [34msuggestion[0m  Try to avoid using 'Is'.        write-good.E-Prime 
+ 134:33  [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+ 138:9   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+
+
+ [4msrc/data/blog/14-04-multi-ai-design-session.md[0m
+ 15:6    [34msuggestion[0m  Try to avoid using 'been'.      write-good.E-Prime 
+ 15:138  [34msuggestion[0m  Try to avoid using 'been'.      write-good.E-Prime 
+ 15:220  [34msuggestion[0m  Try to avoid using 'been'.      write-good.E-Prime 
+ 17:6    [33mwarning[0m     'been blocked' may be passive   write-good.Passive 
+                     voice. Use active voice if you                     
+                     can.                                               
+ 17:6    [34msuggestion[0m  Try to avoid using 'been'.      write-good.E-Prime 
+ 17:61   [34msuggestion[0m  Try to avoid using 'been'.      write-good.E-Prime 
+ 19:3    [34msuggestion[0m  Try to avoid using 'wasn't'.    write-good.E-Prime 
+ 19:61   [34msuggestion[0m  Try to avoid using 'I'm'.       write-good.E-Prime 
+ 23:76   [34msuggestion[0m  Try to avoid using 'I'm'.       write-good.E-Prime 
+ 23:277  [34msuggestion[0m  Try to avoid using 'being'.     write-good.E-Prime 
+ 23:304  [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+ 29:177  [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime 
+ 37:67   [31merror[0m       Don't start a sentence with     write-good.So      
+                     'So '.                                             
+ 39:90   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+ 39:215  [34msuggestion[0m  Try to avoid using 'been'.      write-good.E-Prime 
+ 39:288  [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime 
+
+
+ [4msrc/data/blog/random-astro-logger.md[0m
+ 11:28  [34msuggestion[0m  Try to avoid using 'been'.   write-good.E-Prime 
+ 12:21  [34msuggestion[0m  Try to avoid using 'we're'.  write-good.E-Prime 
+ 20:17  [34msuggestion[0m  Try to avoid using 'is'.     write-good.E-Prime 
+
+
+ [4msrc/data/blog/vercel-setup.md[0m
+ 9:112   [34msuggestion[0m  Try to avoid using 'I'm'.       write-good.E-Prime 
+ 11:23   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+ 11:98   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime 
+ 13:32   [33mwarning[0m     'was done' may be passive       write-good.Passive 
+                     voice. Use active voice if you                     
+                     can.                                               
+ 13:32   [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime 
+ 17:65   [34msuggestion[0m  Try to avoid using 'It's'.      write-good.E-Prime 
+ 17:293  [33mwarning[0m     'is done' may be passive        write-good.Passive 
+                     voice. Use active voice if you                     
+                     can.                                               
+ 17:293  [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime 
+ 21:17   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime 
+
+
+ [4msrc/data/blog/15-04-figma-training-plan.md[0m
+ 11:1    [34msuggestion[0m  Try to avoid using 'I'm'.       write-good.E-Prime  
+ 11:114  [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 13:1    [31merror[0m       Don't start a sentence with     write-good.ThereIs  
+                     'There are'.                                        
+ 13:7    [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 13:141  [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 13:398  [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 13:430  [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 13:430  [33mwarning[0m     'be suprised' may be passive    write-good.Passive  
+                     voice. Use active voice if you                      
+                     can.                                                
+ 13:509  [31merror[0m       Don't start a sentence with     write-good.ThereIs  
+                     'There are'.                                        
+ 13:515  [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 13:652  [33mwarning[0m     'multiple' is too wordy.        write-good.TooWordy 
+ 13:695  [31merror[0m       Don't start a sentence with     write-good.So       
+                     'So,'.                                              
+ 13:713  [34msuggestion[0m  Try to avoid using 'I'm'.       write-good.E-Prime  
+ 13:780  [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 15:1    [31merror[0m       Don't start a sentence with     write-good.So       
+                     'So '.                                              
+ 15:134  [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 17:39   [33mwarning[0m     'is outlined' may be passive    write-good.Passive  
+                     voice. Use active voice if you                      
+                     can.                                                
+ 17:39   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 17:58   [34msuggestion[0m  Try to avoid using 'I'm'.       write-good.E-Prime  
+ 22:7    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 22:181  [34msuggestion[0m  Try to avoid using 'you're'.    write-good.E-Prime  
+
+
+ [4msrc/data/blog/vercel-publish-nightmare.md[0m
+ 11:55   [33mwarning[0m     'it was' is too wordy.        write-good.TooWordy 
+ 11:58   [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+ 11:86   [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+ 11:143  [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+ 11:147  [33mwarning[0m     'very' is a weasel word!      write-good.Weasel   
+ 11:153  [33mwarning[0m     'very' is a weasel word!      write-good.Weasel   
+ 15:35   [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+ 15:82   [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+ 17:92   [34msuggestion[0m  Try to avoid using 'is'.      write-good.E-Prime  
+ 21:37   [34msuggestion[0m  Try to avoid using 'be'.      write-good.E-Prime  
+ 21:135  [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+ 21:218  [34msuggestion[0m  Try to avoid using 'be'.      write-good.E-Prime  
+ 23:15   [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+ 23:211  [33mwarning[0m     'implement' is too wordy.     write-good.TooWordy 
+ 31:70   [34msuggestion[0m  Try to avoid using 'is'.      write-good.E-Prime  
+ 35:345  [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+ 44:106  [34msuggestion[0m  Try to avoid using 'we're'.   write-good.E-Prime  
+ 44:206  [34msuggestion[0m  Try to avoid using 'been'.    write-good.E-Prime  
+ 62:13   [34msuggestion[0m  Try to avoid using 'wasn't'.  write-good.E-Prime  
+ 63:101  [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+ 63:228  [34msuggestion[0m  Try to avoid using 'was'.     write-good.E-Prime  
+ 69:24   [34msuggestion[0m  Try to avoid using 'you're'.  write-good.E-Prime  
+ 69:99   [34msuggestion[0m  Try to avoid using 'is'.      write-good.E-Prime  
+
+✖ [31m5 errors[0m, [33m19 warnings[0m and [34m83 suggestions[0m in 9 files.
