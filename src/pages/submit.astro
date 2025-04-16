@@ -36,49 +36,91 @@ import Footer from "src/components/Footer.astro";
         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
       </div>
     </form>
-<script>
-  const form = document.getElementById("blog-form");
-  if (form instanceof HTMLFormElement) {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
 
-      const titleEl = document.getElementById("title");
-      const tagsEl = document.getElementById("tags");
-      const contentEl = document.getElementById("content");
+    {/* Client-side script with corrections */}
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("blog-form");
+        if (!(form instanceof HTMLFormElement)) {
+          console.error("Form not found or is not a form element");
+          return;
+        }
 
-      if (
-        !(titleEl instanceof HTMLInputElement) ||
-        !(tagsEl instanceof HTMLInputElement) ||
-        !(contentEl instanceof HTMLTextAreaElement)
-      ) return;
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-      const payload = {
-        title: titleEl.value,
-        tags: tagsEl.value.split(",").map(tag => tag.trim()).filter(Boolean),
-        notes: "",
-        data: { content: contentEl.value }
-      };
+          // Get form elements
+          const titleEl = document.getElementById("title") as HTMLInputElement | null;
+          const dateEl = document.getElementById("date") as HTMLInputElement | null; // Assuming you might need date later
+          const tagsEl = document.getElementById("tags") as HTMLInputElement | null;
+          const contentEl = document.getElementById("content") as HTMLTextAreaElement | null;
 
-      const res = await fetch("/api/get-presigned-url", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+          // Basic validation
+          if (!titleEl || !tagsEl || !contentEl || !titleEl.value || !contentEl.value) {
+            alert("Missing required form fields (Title and Markdown Content)");
+            return;
+          }
 
-      if (res.ok) {
-        form.reset();
-        alert("Log submitted successfully!");
-      } else {
-        alert("Failed to submit log.");
-      }
-    });
-  } else {
-    console.error("Form not found or is not a form element");
-  }
-</script>
+          const title = titleEl.value.trim().replace(/\s+/g, "-").toLowerCase();
+          const tags = tagsEl.value; // Use as needed
+          const content = contentEl.value;
+          // const date = dateEl?.value; // Use as needed
 
+          // Ensure filename ends with .md as expected by the API
+          const filename = `${title}.md`;
+
+          try {
+            // Step 1: Get a presigned URL from your API
+            console.log(`Requesting presigned URL for filename: ${filename}`);
+            const res = await fetch("/api/get-presigned-url", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                filename: filename // Use lowercase 'filename' key
+              }),
+            });
+
+            if (!res.ok) {
+              const errorData = await res.json().catch(() => ({})); // Try to parse error JSON
+              console.error("Failed to get presigned URL:", res.status, errorData);
+              alert(`Failed to get presigned URL: ${errorData.error || res.statusText || 'Unknown error'}`);
+              return;
+            }
+
+            // Your API returns { url: signedUrl }
+            const { url: presignedUrl } = await res.json();
+            console.log("Received presigned URL:", presignedUrl);
+
+            // Step 2: Upload the file content to S3 using the presigned URL
+            console.log("Uploading content to S3...");
+            const uploadRes = await fetch(presignedUrl, { // Use the URL directly
+              method: "PUT",                            // Use PUT for PutObjectCommand URLs
+              headers: {
+                // ContentType must match what was used to generate the URL on the server
+                'Content-Type': 'text/markdown'
+              },
+              body: new Blob([content], { type: "text/markdown" }) // Send content as Blob
+            });
+
+            if (uploadRes.ok) {
+              console.log("Upload successful!");
+              alert("Upload complete!");
+              form.reset(); // Clear the form
+            } else {
+              // Attempt to get error details from S3 response (often XML)
+              const errorText = await uploadRes.text().catch(() => "Could not read S3 error response");
+              console.error("S3 Upload failed:", uploadRes.status, uploadRes.statusText, errorText);
+              alert(`Upload failed: ${uploadRes.status} ${uploadRes.statusText}`);
+            }
+
+          } catch (error) {
+              console.error("An error occurred during the submission process:", error);
+              alert("An unexpected error occurred. Please check the console.");
+          }
+        }); // End of submit event listener
+      }); // End of DOMContentLoaded listener
+    </script>
 
   </body>
   <Footer />
 </Layout>
-
