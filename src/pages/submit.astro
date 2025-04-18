@@ -23,135 +23,131 @@ import Footer from "src/components/Footer.astro";
       </div>
 
       <div>
+        <label for="description" class="block font-medium">Description (Optional)</label>
+        <textarea id="description" rows="3" class="w-full px-3 py-2 border rounded bg-gray-900 text-white" placeholder="A short summary of the post..."></textarea>
+      </div>
+
+      <div>
         <label for="tags" class="block font-medium">Tags</label>
         <input type="text" id="tags" placeholder="comma,separated,tags" class="w-full px-3 py-2 border rounded bg-gray-900 text-white" />
       </div>
 
       <div>
-        <label for="content" class="block font-medium">Markdown</label>
-        <textarea id="content" rows="15" class="w-full px-3 py-2 border rounded bg-gray-900 text-white"></textarea>
+        <label for="content" class="block font-medium">Markdown Content</label>
+        <textarea id="content" rows="15" required class="w-full px-3 py-2 border rounded bg-gray-900 text-white"></textarea>
       </div>
 
       <div class="text-right">
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit Draft</button>
       </div>
     </form>
 
-    {/* Client-side script with corrections */}
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("blog-form");
-      if (!(form instanceof HTMLFormElement)) {
-        console.error("Form not found or is not a form element");
-        return;
-      }
-
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        // Get form elements
-        const titleEl = document.getElementById("title") as HTMLInputElement | null;
-        const dateEl = document.getElementById("date") as HTMLInputElement | null;
-        const tagsEl = document.getElementById("tags") as HTMLInputElement | null;
-        const contentEl = document.getElementById("content") as HTMLTextAreaElement | null;
-
-        // --- Requirement 4: Validation for required fields ---
-        // Ensure title and content elements exist and have non-empty values
-        if (!titleEl?.value || !contentEl?.value) {
-          alert("Missing required form fields: Title and Markdown Content must be filled.");
+    {/* Client-side script including Title and Description in Front Matter */}
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("blog-form");
+        if (!(form instanceof HTMLFormElement)) {
+          console.error("Form not found or is not a form element");
           return;
         }
 
-        // --- Requirement 1 & 2: Sanitize and prefix filename ---
-        // 1. Sanitize: Keep alphanumeric chars and hyphens, replace others with hyphen, lowercase
-        const sanitizedTitle = titleEl.value
-          .trim()
-          .toLowerCase()
-          .replace(/[^a-z0-9\s-]/g, '') // Remove unwanted special chars (keep spaces and hyphens for now)
-          .replace(/\s+/g, "-")         // Replace spaces with hyphens
-          .replace(/-+/g, "-");         // Replace multiple hyphens with single one
-        // 2. Prefix and add extension
-        const filename = `draft_${sanitizedTitle}.md`;
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-        // --- Requirement 3: Capture optional fields and prepare content ---
-        const rawContent = contentEl.value;
-        const dateValue = dateEl?.value; // Optional: Get date value
-        const tagsValue = tagsEl?.value.trim(); // Optional: Get tags value, trim whitespace
+          // Get form elements
+          const titleEl = document.getElementById("title") as HTMLInputElement | null;
+          const dateEl = document.getElementById("date") as HTMLInputElement | null;
+          const tagsEl = document.getElementById("tags") as HTMLInputElement | null;
+          const descriptionEl = document.getElementById("description") as HTMLInputElement | HTMLTextAreaElement | null; // Get description element
+          const contentEl = document.getElementById("content") as HTMLTextAreaElement | null;
 
-        // Construct YAML front matter if date or tags exist
-        let frontMatter = "---\n";
-        let hasFrontMatter = false;
-        if (dateValue) {
-          frontMatter += `date: ${dateValue}\n`;
-          hasFrontMatter = true;
-        }
-        if (tagsValue) {
-          // Format tags as a YAML list if they contain commas, otherwise as a string
-          const tagsArray = tagsValue.split(',').map(tag => tag.trim()).filter(tag => tag);
-          if (tagsArray.length > 0) {
-             frontMatter += `tags:\n${tagsArray.map(tag => `  - ${tag}`).join('\n')}\n`;
-             hasFrontMatter = true;
-          } else if (tagsValue) { // Handle case of single tag with no comma
-            frontMatter += `tags: ${tagsValue}\n`;
-            hasFrontMatter = true;
-          }
-        }
-        frontMatter += "---\n\n"; // Closing separator and newline
-
-        // Prepend front matter only if date or tags were present
-        const finalContent = hasFrontMatter ? frontMatter + rawContent : rawContent;
-
-        // --- Upload Process ---
-        try {
-          // Step 1: Get a presigned URL from your API
-          console.log(`Requesting presigned URL for filename: ${filename}`);
-          const res = await fetch("/api/get-presigned-url", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              filename: filename // Send the sanitized and prefixed filename
-            }),
-          });
-
-          if (!res.ok) {
-            const errorData = await res.json().catch(() => ({}));
-            console.error("Failed to get presigned URL:", res.status, errorData);
-            alert(`Failed to get presigned URL: ${errorData.error || res.statusText || 'Unknown error'}`);
+          // --- Validation for required fields ---
+          // Title and Markdown Content are essential for the draft structure
+          if (!titleEl?.value || !contentEl?.value) {
+            alert("Missing required form fields: Title and Markdown Content must be filled.");
             return;
           }
 
-          const { url: presignedUrl } = await res.json();
-          console.log("Received presigned URL:", presignedUrl);
+          // --- Filename Generation ---
+          const sanitizedTitle = titleEl.value
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '') // Remove unwanted special chars
+            .replace(/\s+/g, "-")         // Replace spaces with hyphens
+            .replace(/-+/g, "-");         // Replace multiple hyphens
+          const filename = `draft_${sanitizedTitle}.md`;
 
-          // Step 2: Upload the combined content (front matter + markdown) to S3
-          console.log("Uploading content to S3...");
-          const uploadRes = await fetch(presignedUrl, {
-            method: "PUT",
-            headers: {
-              // Ensure this matches the ContentType in your API (get-presigned-url.ts)
-              'Content-Type': 'text/markdown'
-            },
-             // Send the final content (potentially with front matter) as a Blob
-            body: new Blob([finalContent], { type: "text/markdown" })
-          });
+          // --- Prepare Content with Front Matter ---
+          const rawContent = contentEl.value;
+          const titleValue = titleEl.value.trim(); // Use the raw title for front matter
+          const descriptionValue = descriptionEl?.value.trim(); // Optional: Get description value
+          const dateValue = dateEl?.value; // Optional: Get date value
+          const tagsValue = tagsEl?.value.trim(); // Optional: Get tags value
 
-          if (uploadRes.ok) {
-            console.log("Upload successful!");
-            alert("Upload complete!");
-            form.reset(); // Clear the form
-          } else {
-            const errorText = await uploadRes.text().catch(() => "Could not read S3 error response");
-            console.error("S3 Upload failed:", uploadRes.status, uploadRes.statusText, errorText);
-            alert(`Upload failed: ${uploadRes.status} ${uploadRes.statusText}. Check console for details.`);
+          // Construct YAML front matter string
+          let frontMatter = `---\ntitle: "${titleValue.replace(/"/g, '\\"')}"\n`; // Mandatory title
+
+          if (descriptionValue) { // Optional description
+              frontMatter += `description: "${descriptionValue.replace(/"/g, '\\"')}"\n`;
           }
+          if (dateValue) { // Optional date
+            frontMatter += `date: ${dateValue}\n`;
+          }
+          if (tagsValue) { // Optional tags
+            const tagsArray = tagsValue.split(',').map(tag => tag.trim()).filter(tag => tag);
+            if (tagsArray.length > 0) {
+               frontMatter += `tags:\n${tagsArray.map(tag => `  - ${tag.replace(/"/g, '\\"')}`).join('\n')}\n`;
+            }
+          }
+          frontMatter += "---\n\n"; // Closing separator
 
-        } catch (error) {
-            console.error("An error occurred during the submission process:", error);
-            alert("An unexpected error occurred. Please check the console.");
-        }
-      }); // End of submit event listener
-    }); // End of DOMContentLoaded listener
-  </script>
+          const finalContent = frontMatter + rawContent;
+
+          // --- Upload Process ---
+          try {
+            // Step 1: Get a presigned URL
+            console.log(`Requesting presigned URL for filename: ${filename}`);
+            const res = await fetch("/api/get-presigned-url", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ filename: filename }),
+            });
+
+            if (!res.ok) {
+              const errorData = await res.json().catch(() => ({}));
+              console.error("Failed to get presigned URL:", res.status, errorData);
+              alert(`Failed to get presigned URL: ${errorData.error || res.statusText || 'Unknown error'}`);
+              return;
+            }
+
+            const { url: presignedUrl } = await res.json();
+            console.log("Received presigned URL:", presignedUrl);
+
+            // Step 2: Upload content to S3
+            console.log("Uploading content to S3...");
+            const uploadRes = await fetch(presignedUrl, {
+              method: "PUT",
+              headers: { 'Content-Type': 'text/markdown' },
+              body: new Blob([finalContent], { type: "text/markdown" })
+            });
+
+            if (uploadRes.ok) {
+              console.log("Upload successful!");
+              alert("Draft upload complete!");
+              form.reset();
+            } else {
+              const errorText = await uploadRes.text().catch(() => "Could not read S3 error response");
+              console.error("S3 Upload failed:", uploadRes.status, uploadRes.statusText, errorText);
+              alert(`Upload failed: ${uploadRes.status} ${uploadRes.statusText}. Check console.`);
+            }
+
+          } catch (error) {
+              console.error("An error occurred during submission:", error);
+              alert("An unexpected error occurred. Please check the console.");
+          }
+        }); // End of submit event listener
+      }); // End of DOMContentLoaded listener
+    </script>
 
   </body>
   <Footer />
