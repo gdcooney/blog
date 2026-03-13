@@ -1,0 +1,126 @@
+---
+import { supabase } from '../lib/supabase';
+import '../styles/global.css'; // <--- ADD THIS LINE
+
+const { username } = Astro.params;
+
+/**
+ * 1. DEBUG LOGS
+ */
+console.log("--- CHRONICLE ROUTE HIT ---");
+console.log("Param 'username':", username);
+
+// 2. Fetch the User Profile
+const { data: profile, error: profileError } = await supabase
+  .from('ms_profiles')
+  .select('id, display_name, username, about_me')
+  .ilike('username', username || '') 
+  .single();
+
+if (profileError) {
+    console.error("Supabase Profile Error:", profileError.message);
+}
+
+/**
+ * 3. FALLBACK: Debug screen if profile is missing
+ */
+if (!profile) {
+  return new Response(`
+    <body style="background: #050505; color: #fff; font-family: sans-serif; padding: 2rem;">
+      <h1 style="color: #ef4444;">404: User Not Found</h1>
+      <p>Astro reached the file successfully, but user "${username}" isn't in 'ms_profiles'.</p>
+      <p style="color: #666; font-size: 0.8rem;">Error: ${profileError?.message || 'None'}</p>
+    </body>
+  `, { status: 404, headers: { 'Content-Type': 'text/html' } });
+}
+
+// 4. Fetch Logs with explicit join
+const { data: logs, error: _logsError } = await supabase
+  .from('ms_daily_logs')
+  .select(`
+    id, log_date, journal_content, mood_score, is_published,
+    ms_annotations (id, author_role, content, author_type)
+  `)
+  .eq('user_id', profile.id)
+  .eq('is_published', true)
+  .order('log_date', { ascending: false });
+
+console.log(`Found ${logs?.length || 0} logs for user UUID: ${profile.id}`);
+---
+
+<!DOCTYPE html>
+<html lang="en" class="bg-[#050505]">
+<head>
+    <meta charset="UTF-8">
+    <title>{profile.display_name} // Chronicle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="bg-[#050505] text-zinc-400 font-mono selection:bg-red-600/30">
+
+    <nav class="p-6 border-b border-white/5 flex justify-between items-center sticky top-0 bg-[#050505]/90 backdrop-blur-xl z-50">
+        <span class="font-black tracking-tighter text-white text-xl uppercase">Prove It's Me // <span class="text-red-600">Chronicle</span></span>
+        <div class="flex items-center gap-4">
+            <span class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase hidden md:block">Active Session</span>
+            <div class="h-2 w-2 rounded-full bg-red-600 animate-pulse"></div>
+        </div>
+    </nav>
+
+    <header class="max-w-4xl mx-auto py-32 px-6 border-x border-white/5 flex flex-col justify-end relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-8 opacity-5 font-black text-9xl select-none uppercase tracking-tighter">
+            {profile.display_name}
+        </div>
+        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-red-600 mb-6 block">Proof of Performance</span>
+        <h1 class="text-7xl md:text-9xl font-black uppercase tracking-tighter text-white leading-[0.85] mb-8">
+            {profile.display_name}
+        </h1>
+        <p class="text-zinc-400 text-xl md:text-2xl max-w-2xl italic border-l-4 border-red-600 pl-8 leading-relaxed">
+            {profile.about_me || "A record of progress and grit."}
+        </p>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 border-x border-white/5 pb-40">
+        {logs && logs.length > 0 ? logs.map((log) => (
+            <section class="py-24 border-t border-white/5 first:border-t-0 group">
+                <div class="flex justify-between items-baseline mb-12">
+                    <h2 class="text-5xl font-black text-white uppercase italic tracking-tighter group-hover:text-red-600 transition-colors">
+                        {log.log_date}
+                    </h2>
+                    <div class="flex gap-1.5">
+                        {[...Array(5)].map((_, i) => (
+                            <div class={`h-8 w-1.5 transition-all duration-500 ${i < log.mood_score ? 'bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.5)]' : 'bg-zinc-800'}`}></div>
+                        ))}
+                    </div>
+                </div>
+
+                <div class="prose prose-zinc prose-invert prose-2xl max-w-none 
+                    prose-p:text-zinc-300 prose-p:leading-snug prose-strong:text-white prose-strong:font-black mb-20">
+                    <Fragment set:html={log.journal_content} />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10 overflow-hidden">
+                    {log.ms_annotations?.filter(a => a.author_type === 'ai').map((anno) => (
+                        <div class="bg-[#050505] p-8 group/card transition-all hover:bg-zinc-900/40">
+                            <span class={`text-[10px] font-black uppercase tracking-[0.2em] mb-6 block transition-colors ${
+                                anno.author_role === 'boxing' ? 'text-red-600 group-hover/card:text-red-500' : 
+                                anno.author_role === 'diet' ? 'text-emerald-500 group-hover/card:text-emerald-400' : 
+                                'text-blue-500 group-hover/card:text-blue-400'
+                            }`}>
+                                {anno.author_role} Coach
+                            </span>
+                            <p class="text-sm leading-relaxed font-medium text-zinc-400 group-hover/card:text-zinc-100 transition-colors italic">
+                                "{anno.content}"
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            </section>
+        )) : (
+            <div class="py-40 text-center opacity-30 flex flex-col items-center gap-6">
+                <div class="h-px w-32 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+                <p class="text-xs uppercase tracking-[0.8em] font-black">Null Synchronization</p>
+                <div class="h-px w-32 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+            </div>
+        )}
+    </main>
+</body>
+</html>

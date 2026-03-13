@@ -1,110 +1,45 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import { getCollection } from "astro:content";
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
-import Socials from "@/components/Socials.astro";
-import LinkButton from "@/components/LinkButton.astro";
-import Card from "@/components/Card.astro";
-import Hr from "@/components/Hr.astro";
-import getSortedPosts from "@/utils/getSortedPosts";
-import IconRss from "@/assets/icons/IconRss.svg";
-import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
-import { SITE } from "@/config";
-import { SOCIALS } from "@/constants";
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+import { supabase } from "../lib/supabase";
 
-const posts = await getCollection("blog");
+// Force SSR mode so we fetch fresh from the DB [cite: 64]
+export const prerender = false; 
 
-const sortedPosts = getSortedPosts(posts);
-const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+// Fetch your published logs from HQ [cite: 65]
+const { data: logs } = await supabase
+  .from("ms_daily_logs")
+  .select("log_date, mood_score, journal_content")
+  .eq("is_published", true)
+  .order("log_date", { ascending: false });
 ---
 
 <Layout>
-  <Header />
-  <main id="main-content" data-layout="index">
-    <section id="hero" class="pt-8 pb-6">
-      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        We're live!
-      </h1>
-      <a
-        target="_blank"
-        href="/rss.xml"
-        class="inline-block"
-        aria-label="rss feed"
-        title="RSS Feed"
-      >
-        <IconRss
-          width={20}
-          height={20}
-          class="scale-125 stroke-accent stroke-3"
-        />
-        <span class="sr-only">RSS Feed</span>
-      </a>
-
-      <p>
-      </p>
-      <p class="mt-2">
-      </p>
-      {
-        // only display if at least one social link is enabled
-        SOCIALS.length > 0 && (
-          <div class="mt-4 flex flex-col sm:flex-row sm:items-center">
-            <div class="mr-2 mb-1 whitespace-nowrap sm:mb-0">Social Links:</div>
-            <Socials />
-          </div>
-        )
-      }
+  <main id="main-content" class="max-w-3xl mx-auto px-4 py-12">
+    <section id="hero" class="mb-12">
+      <h1 class="text-4xl font-black italic uppercase tracking-tighter">The Proof</h1>
+      <p class="text-zinc-500 mt-2 italic">No theory. Just the work. [cite: 66, 67]</p>
     </section>
 
-    <Hr />
-
-    {
-      featuredPosts.length > 0 && (
-        <>
-          <section id="featured" class="pt-12 pb-6">
-            <h2 class="text-2xl font-semibold tracking-wide">Featured</h2>
-            <ul>
-              {featuredPosts.map(data => (
-                <Card variant="h3" {...data} />
-              ))}
-            </ul>
-          </section>
-          {recentPosts.length > 0 && <Hr />}
-        </>
-      )
-    }
-
-    {
-      recentPosts.length > 0 && (
-        <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">Recent Posts</h2>
-          <ul>
-            {recentPosts.map(
-              (data, index) =>
-                index < SITE.postPerIndex && <Card variant="h3" {...data} />
-            )}
-          </ul>
-        </section>
-      )
-    }
-
-    <div class="my-8 text-center">
-      <LinkButton href="/posts/">
-        All Posts
-        <IconArrowRight class="inline-block" />
-      </LinkButton>
-    </div>
+    <ul class="space-y-12">
+      {logs && logs.length > 0 ? (
+        logs.map((log) => (
+          <li class="border-t border-zinc-800 pt-8">
+            <div class="flex justify-between items-baseline mb-2">
+              <a href={`/log/${log.log_date}`} class="text-2xl font-bold hover:text-orange-500 transition-colors">
+                {log.log_date} [cite: 68]
+              </a>
+              <span class="text-sm font-mono text-zinc-500">MOOD: {log.mood_score}/5 [cite: 69]</span>
+            </div>
+            <div class="prose prose-invert line-clamp-2 text-zinc-400" set:html={log.journal_content} />
+          </li>
+        ))
+      ) : (
+        <p class="text-zinc-600 italic text-center py-20 border-2 border-dashed border-zinc-900 rounded-lg">
+          HQ connection active. Waiting for the first synced log... [cite: 69, 70]
+        </p>
+      )}
+    </ul>
   </main>
   <Footer />
 </Layout>
-
-<script>
-  document.addEventListener("astro:page-load", () => {
-    const indexLayout = (document.querySelector("#main-content") as HTMLElement)
-      ?.dataset?.layout;
-    if (indexLayout) {
-      sessionStorage.setItem("backUrl", "/");
-    }
-  });
-</script>

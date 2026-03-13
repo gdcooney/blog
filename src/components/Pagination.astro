@@ -1,34 +1,39 @@
 ---
-import type { Page } from "astro";
-import type { CollectionEntry } from "astro:content";
 import IconArrowLeft from "@/assets/icons/IconArrowLeft.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import LinkButton from "./LinkButton.astro";
 
 export interface Props {
-  page: Page<CollectionEntry<"blog">>;
+  currentPage: number;
+  totalPages: number;
+  prevUrl?: string;
+  nextUrl?: string;
 }
 
-const { page } = Astro.props;
+const { currentPage, totalPages, prevUrl, nextUrl } = Astro.props;
 ---
 
 {
-  page.lastPage > 1 && (
+  totalPages > 1 && (
     <nav class="mt-auto mb-8 flex justify-center" aria-label="Pagination">
       <LinkButton
-        disabled={!page.url.prev}
-        href={page.url.prev as string}
-        class:list={["mr-4 select-none", { "opacity-50": !page.url.prev }]}
+        disabled={!prevUrl}
+        href={prevUrl || "#"}
+        class:list={["mr-4 select-none", { "opacity-50": !prevUrl }]}
         ariaLabel="Previous"
       >
         <IconArrowLeft class="inline-block" />
         Prev
       </LinkButton>
-      {page.currentPage} / {page.lastPage}
+      
+      <span class="flex items-center">
+        {currentPage} / {totalPages}
+      </span>
+
       <LinkButton
-        disabled={!page.url.next}
-        href={page.url.next as string}
-        class:list={["ml-4 select-none", { "opacity-50": !page.url.next }]}
+        disabled={!nextUrl}
+        href={nextUrl || "#"}
+        class:list={["ml-4 select-none", { "opacity-50": !nextUrl }]}
         ariaLabel="Next"
       >
         Next

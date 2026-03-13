@@ -1,0 +1,31 @@
+---
+import { supabase } from "@/lib/supabase";
+import PostDetails from "@/layouts/PostDetails.astro";
+
+// 1. Enable SSR mode for this page
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+// 2. Fetch the specific post data for this page [cite: 74]
+const { data: post } = await supabase
+  .from('ms_daily_logs')
+  .select('*')
+  .eq('log_date', slug)
+  .single();
+
+// 3. Fetch all posts to handle the "Prev/Next" navigation 
+const { data: allPosts } = await supabase
+  .from('ms_daily_logs')
+  .select('id, log_date, title')
+  .eq('is_published', true)
+  .order('log_date', { ascending: false });
+
+// 4. Handle missing posts [cite: 76]
+if (!post) return Astro.redirect("/404");
+
+// 5. Provide an empty array fallback to satisfy the PostDetails type requirement
+const safeAllPosts = allPosts || [];
+---
+
+<PostDetails post={post} posts={safeAllPosts} />

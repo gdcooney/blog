@@ -1,36 +1,50 @@
 ---
 import { slugifyStr } from "@/utils/slugify";
-import type { CollectionEntry } from "astro:content";
-import { getPath } from "@/utils/getPath";
 import Datetime from "./Datetime.astro";
 
-export interface Props extends CollectionEntry<"blog"> {
+// 1. Define Props based on your Supabase Schema instead of Astro Collections
+export interface Props {
+  post: {
+    id: string;
+    log_date: string; // Used as the identifier for the URL
+    journal_content: string;
+    mood_score: number;
+    title?: string; // Optional: if you generate titles, otherwise use Date
+    description?: string;
+  };
   variant?: "h2" | "h3";
 }
 
-const { variant = "h2", data, id, filePath } = Astro.props;
+const { variant = "h2", post } = Astro.props;
 
-const { title, description, pubDatetime, modDatetime, timezone } = data;
+// 2. Map Supabase fields to the component's display variables
+// Using log_date as a fallback title if a specific title doesn't exist
+const displayTitle = post.title || `Entry: ${post.log_date}`;
+const displayDescription = post.description || post.journal_content.replace(/<[^>]*>?/gm, '').substring(0, 160) + "...";
+
+// 3. Construct the link to the post details
+const href = `/blog/${post.log_date}`;
 
 const headerProps = {
-  style: { viewTransitionName: slugifyStr(title) },
+  style: { viewTransitionName: slugifyStr(displayTitle) },
   class: "text-lg font-medium decoration-dashed hover:underline",
 };
 ---
 
 <li class="my-6">
   <a
-    href={getPath(id, filePath)}
+    href={href}
     class="inline-block text-lg font-medium text-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
   >
     {
       variant === "h2" ? (
-        <h2 {...headerProps}>{title}</h2>
+        <h2 {...headerProps}>{displayTitle}</h2>
       ) : (
-        <h3 {...headerProps}>{title}</h3>
+        <h3 {...headerProps}>{displayTitle}</h3>
       )
     }
   </a>
-  <Datetime {pubDatetime} {modDatetime} {timezone} />
-  <p>{description}</p>
+  {/* Pass the log_date as the pubDatetime */}
+  <Datetime pubDatetime={new Date(post.log_date)} />
+  <p>{displayDescription}</p>
 </li>

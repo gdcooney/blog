@@ -5,19 +5,19 @@
 
 :root,
 html[data-theme="light"] {
-  --background: #fdfdfd;
-  --foreground: #282728;
-  --accent: #006cac;
-  --muted: #e6e6e6;
-  --border: #ece9e9;
+  --background: #050505; /* Updated for Chronicle consistency */
+  --foreground: #eaedf3;
+  --accent: #dc2626;     /* High-intensity Red */
+  --muted: #18181b;
+  --border: #27272a;
 }
 
 html[data-theme="dark"] {
-  --background: #212737;
+  --background: #050505;
   --foreground: #eaedf3;
-  --accent: #ff6b01;
-  --muted: #343f60bf;
-  --border: #ab4b08;
+  --accent: #ef4444;
+  --muted: #18181b;
+  --border: #27272a;
 }
 
 @theme inline {
@@ -26,34 +26,35 @@ html[data-theme="dark"] {
   --color-accent: var(--accent);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  
+  /* Adding specific Chronicle brand colors */
+  --color-boxing: #dc2626;
+  --color-diet: #10b981;
+  --color-mindset: #3b82f6;
 }
 
 @layer base {
   * {
     @apply border-border outline-accent/75;
-    scrollbar-width: auto;
+    scrollbar-width: thin;
     scrollbar-color: var(--color-muted) transparent;
   }
   html {
-    @apply overflow-y-scroll scroll-smooth;
+    @apply overflow-y-scroll scroll-smooth bg-background;
   }
   body {
-    @apply flex min-h-svh flex-col bg-background font-mono text-foreground selection:bg-accent/75 selection:text-background;
+    @apply flex min-h-svh flex-col bg-background font-mono text-foreground selection:bg-accent/30 selection:text-foreground;
   }
-  a,
-  button {
-    @apply outline-offset-1 outline-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
-  }
-  button:not(:disabled),
-  [role="button"]:not(:disabled) {
-    cursor: pointer;
-  }
-  section,
-  footer {
-    @apply mx-auto max-w-3xl px-4;
+  
+  /* Ensuring Typography plugin respects our dark theme */
+  .prose {
+    --tw-prose-body: var(--foreground);
+    --tw-prose-headings: #ffffff;
+    --tw-prose-bold: #ffffff;
+    --tw-prose-quotes: var(--foreground);
   }
 }
 
 .active-nav {
-  @apply underline decoration-wavy decoration-2 underline-offset-4;
+  @apply underline decoration-red-600 decoration-2 underline-offset-4 font-black;
 }

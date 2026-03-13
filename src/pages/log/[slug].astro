@@ -1,0 +1,33 @@
+---
+// src/pages/log/[slug].astro
+import { supabase } from '../../lib/supabase';
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = false; // Ensure this stays as an SSR route
+
+const { slug } = Astro.params;
+
+// Fetch the specific log from Supabase
+const { data: log, error } = await supabase
+  .from('ms_daily_logs')
+  .select('*, ms_annotations(*)')
+  .eq('log_date', slug) // Using the date as the slug
+  .single();
+
+if (!log || error) return Astro.redirect('/404');
+---
+
+<Layout title={`Log: ${log.log_date}`}>
+  <main class="max-w-3xl mx-auto py-12 px-6">
+    <h1 class="text-4xl font-black italic mb-8">{log.log_date}</h1>
+    
+    <div class="prose prose-invert" set:html={log.journal_content} />
+
+    {log.ms_annotations?.map((note: any) => (
+      <aside class="mt-12 p-6 bg-zinc-900 border-l-2 border-blue-500">
+        <p class="text-xs font-bold uppercase text-blue-400 mb-2">{note.author_role}</p>
+        <p class="italic">{note.content}</p>
+      </aside>
+    ))}
+  </main>
+</Layout>

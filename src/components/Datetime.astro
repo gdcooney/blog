@@ -11,9 +11,9 @@ dayjs.extend(timezone);
 export interface Props {
   class?: string;
   size?: "sm" | "lg";
-  timezone: string | undefined;
+  timezone?: string | undefined;
   pubDatetime: string | Date;
-  modDatetime: string | Date | undefined | null;
+  modDatetime?: string | Date | undefined | null;
 }
 
 const {

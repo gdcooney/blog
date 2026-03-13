@@ -1,5 +1,7 @@
 import { defineConfig } from "astro/config";
+import { fileURLToPath } from "url";
 import path from "path";
+//import vercel from "@astrojs/vercel/serverless";
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
@@ -9,26 +11,16 @@ import { SITE } from "./src/config.js";
 
 // https://astro.build/config
 export default defineConfig({
-  // 1. Enable SSR: Required for live Supabase data fetching
-  output: "server",
-  
-  // 2. Vercel Adapter: Configured for 2026 serverless standards
-  adapter: vercel({
-    webAnalytics: { enabled: true }
-  }), 
-
-  site: "https://blog.proveitsme.io",
-  
+  adapter: vercel({}), // ✅ Required for Vercel serverless deployment
+  site: SITE.website,
   server: {
-    host: true, // Accessible across your network
+    host: true, // Bind to 0.0.0.0 so it’s accessible across your network
   },
-
   integrations: [
     sitemap({
       filter: (page) => SITE.showArchives || !page.endsWith("/archives"),
     }),
   ],
-
   markdown: {
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
     shikiConfig: {
@@ -36,24 +28,20 @@ export default defineConfig({
       wrap: true,
     },
   },
-
   vite: {
-    // 3. Tailwind 4 Integration: Using the Vite plugin to avoid peer-dep conflicts
-    plugins: [tailwindcss()],
     resolve: {
       alias: {
         '@': path.resolve('./src'),
       },
     },
   },
-
   image: {
     experimentalLayout: "responsive",
   },
-
   experimental: {
     svg: true,
     responsiveImages: true,
     preserveScriptOrder: true,
   },
 });
+

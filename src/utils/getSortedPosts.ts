@@ -1,17 +1,21 @@
-import type { CollectionEntry } from "astro:content";
-import postFilter from "src/utils/postFilter.ts";
+// Define a simplified interface that matches your Supabase log structure
+export interface ChroniclePost {
+  id: string;
+  log_date: string;
+  journal_content: string;
+  mood_score: number;
+  is_published: boolean;
+  title?: string;
+  description?: string;
+}
 
-const getSortedPosts = (posts: CollectionEntry<"blog">[]) => {
+const getSortedPosts = (posts: ChroniclePost[]) => {
   return posts
-    .filter(postFilter)
+    .filter(post => post.is_published) // Filter out unpublished drafts
     .sort(
       (a, b) =>
-        Math.floor(
-          new Date(b.data.modDatetime ?? b.data.pubDatetime).getTime() / 1000
-        ) -
-        Math.floor(
-          new Date(a.data.modDatetime ?? a.data.pubDatetime).getTime() / 1000
-        )
+        Math.floor(new Date(b.log_date).getTime() / 1000) -
+        Math.floor(new Date(a.log_date).getTime() / 1000)
     );
 };
 

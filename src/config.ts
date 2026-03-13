@@ -1,22 +1,24 @@
 export const SITE = {
-  website: "https://blog-jet-phi.vercel.app/", // replace this with your deployed domain
+  // Removed trailing slash for safer validation
+  website: "https://blog.proveitsme.io", 
   author: "Gee",
-  profile: "https://blog-jet-phi.vercel.app/",
-  desc: ".",
-  title: "Gees Playground",
+  profile: "https://blog.proveitsme.io",
+  desc: "Get after it!",
+  title: "proveItsMe.io",
   ogImage: "astropaper-og.jpg",
   lightAndDarkMode: true,
   postPerIndex: 4,
   postPerPage: 4,
-  scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
+  scheduledPostMargin: 15 * 60 * 1000, 
   showArchives: true,
-  showBackButton: true, // show back button in post detail
+  showBackButton: true, 
   editPost: {
     enabled: true,
-    text: "Suggest Changes",
-    url: "https://github.com/satnaing/astro-paper/edit/main/",
+    text: "Edit in Lab",
+    // Points back to your Supabase-powered Cockpit
+    url: "https://lab.proveitsme.io/?date=", 
   },
   dynamicOgImage: true,
-  lang: "en", // html lang code. Set this empty and default will be "en"
-  timezone: "Australia/Melbourne", // Default global timezone (IANA format) https://en.wikipedia.org/wiki/List_of_tz_database_time_zonesAA
+  lang: "en", 
+  timezone: "Australia/Melbourne", 
 } as const;
