@@ -36,7 +36,7 @@ const { data: logRaw, error: logError } = await supabase
     `id, log_date, journal_content, mood_score,
      ms_annotations(
        id, author_type, author_role, content, persona_id,
-       ms_persona_registry(name, specialty)
+       ms_persona_registry!ms_annotations_persona_id_fkey(display_name, specialty)
      )`
   )
   .eq("user_id", profile.id)

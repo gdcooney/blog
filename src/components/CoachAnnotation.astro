@@ -10,7 +10,7 @@ export interface Annotation {
   author_role: string | null;
   content: string;
   persona_id: string | null;
-  ms_persona_registry?: { name: string | null; specialty: string | null } | null;
+  ms_persona_registry?: { display_name: string | null; specialty: string | null } | null;
 }
 
 interface Props {
@@ -22,7 +22,7 @@ interface Props {
 const { annotation, feedback, displayName } = Astro.props;
 
 const persona = annotation.ms_persona_registry ?? null;
-const coachName = persona?.name || annotation.author_role || "Coach";
+const coachName = persona?.display_name || annotation.author_role || "Coach";
 const specialty = persona?.specialty || annotation.author_role || null;
 const initial = coachName.charAt(0).toUpperCase();
 ---
