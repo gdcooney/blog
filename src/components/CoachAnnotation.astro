@@ -1,0 +1,99 @@
+---
+export interface AnnotationFeedback {
+  signal: string;
+  reason_text?: string | null;
+}
+
+export interface Annotation {
+  id: string;
+  author_type: string;
+  author_role: string | null;
+  content: string;
+  persona_id: string | null;
+  ms_persona_registry?: { name: string | null; specialty: string | null } | null;
+}
+
+interface Props {
+  annotation: Annotation;
+  feedback: AnnotationFeedback | null;
+  displayName: string;
+}
+
+const { annotation, feedback, displayName } = Astro.props;
+
+const persona = annotation.ms_persona_registry ?? null;
+const coachName = persona?.name || annotation.author_role || "Coach";
+const specialty = persona?.specialty || annotation.author_role || null;
+const initial = coachName.charAt(0).toUpperCase();
+---
+
+<div class="coach-annotation">
+  <div class="coach-annotation__header">
+    <div class="coach-annotation__avatar" aria-hidden="true">{initial}</div>
+    <div class="coach-annotation__meta">
+      <span class="coach-annotation__name">{coachName}</span>
+      {specialty && specialty !== coachName && (
+        <span class="coach-annotation__specialty">&nbsp;&middot; {specialty}</span>
+      )}
+    </div>
+  </div>
+  <p class="coach-annotation__body">&ldquo;{annotation.content}&rdquo;</p>
+  {feedback && (
+    <p class="coach-annotation__feedback">
+      {feedback.signal === "up" && `↑ ${displayName} found this advice useful.`}
+      {feedback.signal === "down" && `↓ ${displayName} found this advice unhelpful.`}
+    </p>
+  )}
+</div>
+
+<style>
+  .coach-annotation {
+    border-left: 2px solid var(--accent);
+    padding: 12px 16px;
+    margin-top: 20px;
+  }
+  .coach-annotation__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .coach-annotation__avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    font-family: ui-monospace, monospace;
+  }
+  .coach-annotation__meta {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .coach-annotation__specialty {
+    opacity: 0.55;
+    font-weight: 400;
+  }
+  .coach-annotation__body {
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 0 0 6px;
+  }
+  .coach-annotation__feedback {
+    font-size: 12px;
+    font-weight: 400;
+    font-style: normal;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    opacity: 0.55;
+    margin: 6px 0 0;
+  }
+</style>

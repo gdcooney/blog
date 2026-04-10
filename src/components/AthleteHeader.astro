@@ -1,0 +1,185 @@
+---
+import SprintCard from "./SprintCard.astro";
+
+interface SocialLink {
+  platform: string;
+  url: string;
+  label?: string;
+}
+
+interface Profile {
+  display_name: string;
+  about_me: string | null;
+  avatar_url: string | null;
+  display_avatar: boolean;
+  display_links: boolean;
+  social_links: SocialLink[] | null;
+}
+
+interface Sprint {
+  sprint_number: number;
+  title: string | null;
+  focus_area: string | null;
+  start_date: string;
+  end_date: string;
+}
+
+interface Props {
+  profile: Profile;
+  sprint: Sprint | null;
+}
+
+const { profile, sprint } = Astro.props;
+
+const initial = profile.display_name?.charAt(0)?.toUpperCase() ?? "?";
+const socialLinks: SocialLink[] = Array.isArray(profile.social_links)
+  ? profile.social_links
+  : [];
+---
+
+<section class="athlete-header">
+  <div class="athlete-header__inner">
+    <div class="athlete-header__left">
+      {
+        profile.display_avatar && (
+          profile.avatar_url ? (
+            <img
+              src={profile.avatar_url}
+              alt={`${profile.display_name} avatar`}
+              class="athlete-header__avatar-img"
+              width="56"
+              height="56"
+            />
+          ) : (
+            <div class="athlete-header__avatar-initials" aria-hidden="true">
+              {initial}
+            </div>
+          )
+        )
+      }
+      <h1 class="athlete-header__name">{profile.display_name}</h1>
+      {
+        profile.about_me && (
+          <p class="athlete-header__bio">{profile.about_me}</p>
+        )
+      }
+      {
+        profile.display_links && socialLinks.length > 0 && (
+          <address class="athlete-header__links">
+            {socialLinks.map((link) => {
+              const isEmail =
+                link.platform?.toLowerCase() === "email";
+              const href = isEmail ? `mailto:${link.url}` : link.url;
+              const label = link.label || link.platform || link.url;
+              return (
+                <a
+                  href={href}
+                  class="athlete-header__link"
+                  {...(!isEmail
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
+                >
+                  {label}
+                </a>
+              );
+            })}
+          </address>
+        )
+      }
+    </div>
+    {sprint && (
+      <div class="athlete-header__right">
+        <SprintCard sprint={sprint} />
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .athlete-header {
+    border-bottom: 0.5px solid color-mix(in srgb, currentColor 14%, transparent);
+    padding: 40px 0;
+  }
+  .athlete-header__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+  }
+  .athlete-header__left {
+    flex: 1;
+    min-width: 0;
+  }
+  .athlete-header__avatar-img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .athlete-header__avatar-initials {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    border: 1.5px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+    flex-shrink: 0;
+  }
+  .athlete-header__name {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0 0 12px;
+  }
+  .athlete-header__bio {
+    font-size: 15px;
+    line-height: 1.65;
+    opacity: 0.65;
+    margin: 0 0 18px;
+    max-width: 460px;
+  }
+  .athlete-header__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-style: normal;
+  }
+  .athlete-header__link {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+    line-height: 1.8;
+  }
+  .athlete-header__link:hover {
+    border-bottom-color: var(--accent);
+  }
+  .athlete-header__right {
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+  @media (max-width: 560px) {
+    .athlete-header__inner {
+      flex-direction: column;
+    }
+    .athlete-header__right {
+      padding-top: 0;
+      width: 100%;
+    }
+    .athlete-header__right > :global(.sprint-card) {
+      max-width: 100%;
+    }
+  }
+</style>

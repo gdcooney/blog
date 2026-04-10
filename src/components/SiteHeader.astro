@@ -1,0 +1,73 @@
+---
+interface Props {
+  username: string;
+}
+const { username } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <span class="site-header__url">blog.proveitsme.io/<span class="site-header__username">{username}</span></span>
+    <address class="site-header__contact">
+      <div class="site-header__pi-avatar" aria-hidden="true">PI</div>
+      <a href="mailto:info@proveitsme.io" class="site-header__email">info@proveitsme.io</a>
+    </address>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 0.5px solid color-mix(in srgb, currentColor 18%, transparent);
+  }
+  .site-header__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .site-header__url {
+    font-size: 13px;
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+    letter-spacing: 0.02em;
+    opacity: 0.55;
+  }
+  .site-header__username {
+    opacity: 1;
+  }
+  .site-header__contact {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-style: normal;
+  }
+  .site-header__pi-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    font-family: ui-monospace, monospace;
+    flex-shrink: 0;
+  }
+  .site-header__email {
+    font-size: 12px;
+    text-decoration: none;
+    color: inherit;
+    opacity: 0.5;
+    transition: opacity 0.15s;
+  }
+  .site-header__email:hover {
+    opacity: 0.9;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>

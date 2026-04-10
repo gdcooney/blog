@@ -1,0 +1,177 @@
+---
+import CoachAnnotation from "./CoachAnnotation.astro";
+import type { Annotation, AnnotationFeedback } from "./CoachAnnotation.astro";
+
+interface Log {
+  id: string;
+  log_date: string;
+  journal_content: string | null;
+  mood_score: number | null;
+  ms_annotations?: Annotation[] | null;
+}
+
+interface Props {
+  log: Log;
+  dayNumber: number;
+  displayName: string;
+  feedbackMap: Record<string, AnnotationFeedback>;
+}
+
+const { log, dayNumber, displayName, feedbackMap } = Astro.props;
+
+// Parse date safely — append T12:00:00 to avoid UTC day-shift
+const dateObj = new Date(log.log_date + "T12:00:00");
+const dateFormatted = dateObj
+  .toLocaleDateString("en-AU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Australia/Melbourne",
+  })
+  .toUpperCase();
+
+const moodScore = log.mood_score ?? 0;
+const aiAnnotations =
+  log.ms_annotations?.filter((a) => a.author_type === "ai") ?? [];
+---
+
+<article class="journal-entry">
+  <div class="journal-entry__meta">
+    <time datetime={log.log_date} class="journal-entry__date">{dateFormatted}</time>
+    <span class="journal-entry__badge">Day {dayNumber}</span>
+    <div
+      class="journal-entry__mood"
+      aria-label={`Mood: ${moodScore} of 5`}
+      role="img"
+    >
+      {
+        [1, 2, 3, 4, 5].map((i) => (
+          <span
+            class={`journal-entry__dot${i <= moodScore ? " journal-entry__dot--filled" : ""}`}
+          />
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="journal-entry__body">
+    <Fragment set:html={log.journal_content ?? ""} />
+  </div>
+
+  {
+    aiAnnotations.length > 0 && (
+      <div class="journal-entry__annotations">
+        {aiAnnotations.map((anno) => (
+          <CoachAnnotation
+            annotation={anno}
+            feedback={feedbackMap[anno.id] ?? null}
+            displayName={displayName}
+          />
+        ))}
+      </div>
+    )
+  }
+</article>
+
+<style>
+  .journal-entry {
+    padding: 40px 0;
+    border-bottom: 0.5px solid color-mix(in srgb, currentColor 14%, transparent);
+  }
+  .journal-entry:last-child {
+    border-bottom: none;
+  }
+  .journal-entry__meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .journal-entry__date {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    opacity: 0.55;
+    font-family: ui-monospace, monospace;
+  }
+  .journal-entry__badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    font-family: ui-monospace, monospace;
+  }
+  .journal-entry__mood {
+    display: flex;
+    gap: 5px;
+    margin-left: auto;
+    align-items: center;
+  }
+  .journal-entry__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: color-mix(in srgb, currentColor 18%, transparent);
+    flex-shrink: 0;
+  }
+  .journal-entry__dot--filled {
+    background: var(--accent);
+  }
+  /* Body prose — Tiptap HTML */
+  .journal-entry__body {
+    font-size: 17px;
+    line-height: 1.78;
+  }
+  .journal-entry__body :global(p) {
+    margin: 0 0 1.1em;
+  }
+  .journal-entry__body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .journal-entry__body :global(h1),
+  .journal-entry__body :global(h2),
+  .journal-entry__body :global(h3),
+  .journal-entry__body :global(h4) {
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 1.5em 0 0.5em;
+  }
+  .journal-entry__body :global(strong) {
+    font-weight: 700;
+  }
+  .journal-entry__body :global(em) {
+    font-style: italic;
+  }
+  .journal-entry__body :global(ul),
+  .journal-entry__body :global(ol) {
+    padding-left: 1.5em;
+    margin: 0 0 1em;
+  }
+  .journal-entry__body :global(li) {
+    margin-bottom: 0.3em;
+  }
+  .journal-entry__body :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .journal-entry__body :global(blockquote) {
+    border-left: 2px solid var(--accent);
+    padding-left: 1.1em;
+    margin: 1em 0;
+    font-style: italic;
+    opacity: 0.8;
+  }
+  .journal-entry__body :global(hr) {
+    border: none;
+    border-top: 0.5px solid color-mix(in srgb, currentColor 15%, transparent);
+    margin: 1.5em 0;
+  }
+  .journal-entry__annotations {
+    margin-top: 28px;
+  }
+</style>

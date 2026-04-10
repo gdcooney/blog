@@ -1,0 +1,302 @@
+---
+import { supabase } from "@/lib/supabase.js";
+import SiteHeader from "@/components/SiteHeader.astro";
+import JournalEntry from "@/components/JournalEntry.astro";
+import type { AnnotationFeedback, Annotation } from "@/components/CoachAnnotation.astro";
+
+export const prerender = false;
+
+interface LogRow {
+  id: string;
+  log_date: string;
+  journal_content: string | null;
+  mood_score: number | null;
+  ms_annotations?: Annotation[] | null;
+}
+
+const { username, date } = Astro.params;
+
+// 1. Fetch profile with blog fields
+const { data: profile, error: profileError } = await supabase
+  .from("ms_profiles")
+  .select(
+    "id, display_name, username, about_me, avatar_url, blog_accent_color, blog_font, blog_bg, social_links, blog_enabled, display_avatar, display_links"
+  )
+  .ilike("username", username ?? "")
+  .single();
+
+if (profileError || !profile || profile.blog_enabled === false) {
+  return new Response(null, { status: 404 });
+}
+
+// 2. Fetch the specific log with annotations
+const { data: logRaw, error: logError } = await supabase
+  .from("ms_daily_logs")
+  .select(
+    `id, log_date, journal_content, mood_score,
+     ms_annotations(
+       id, author_type, author_role, content, persona_id,
+       ms_persona_registry(name, specialty)
+     )`
+  )
+  .eq("user_id", profile.id)
+  .eq("log_date", date ?? "")
+  .eq("is_published", true)
+  .single();
+
+if (logError || !logRaw) {
+  return new Response(null, { status: 404 });
+}
+
+const log = logRaw as LogRow;
+
+// 3. Fetch all published log dates for day-number calculation and prev/next
+const { data: allLogs } = await supabase
+  .from("ms_daily_logs")
+  .select("id, log_date")
+  .eq("user_id", profile.id)
+  .eq("is_published", true)
+  .order("log_date", { ascending: false });
+
+const sortedLogs = allLogs ?? [];
+const totalEntries = sortedLogs.length;
+const currentIndex = sortedLogs.findIndex((l) => l.id === log.id);
+const dayNumber = totalEntries - currentIndex;
+
+const prevLog = currentIndex < totalEntries - 1 ? sortedLogs[currentIndex + 1] : null;
+const nextLog = currentIndex > 0 ? sortedLogs[currentIndex - 1] : null;
+
+// 4. Fetch annotation feedback
+const annotationIds = (log.ms_annotations ?? []).map((a) => a.id);
+let feedbackMap: Record<string, AnnotationFeedback> = {};
+
+if (annotationIds.length > 0) {
+  const { data: feedbackRows } = await supabase
+    .from("ms_annotation_feedback")
+    .select("annotation_id, signal, reason_text")
+    .eq("profile_id", profile.id)
+    .in("annotation_id", annotationIds)
+    .order("created_at", { ascending: false });
+
+  if (feedbackRows) {
+    for (const row of feedbackRows) {
+      if (!feedbackMap[row.annotation_id]) {
+        feedbackMap[row.annotation_id] = {
+          signal: row.signal,
+          reason_text: row.reason_text,
+        };
+      }
+    }
+  }
+}
+
+// 5. Derive page styles from profile
+const accentColor = profile.blog_accent_color ?? "#D85A30";
+const bgMap: Record<string, string> = {
+  light: "#ffffff",
+  warm: "#FAF8F4",
+  dark: "#1A1917",
+};
+const fgMap: Record<string, string> = {
+  light: "#1A1917",
+  warm: "#1A1917",
+  dark: "#F5F3EF",
+};
+const blogBg = profile.blog_bg ?? "light";
+const bgColor = bgMap[blogBg] ?? bgMap.light;
+const fgColor = fgMap[blogBg] ?? fgMap.light;
+const fontFamily =
+  profile.blog_font === "sans"
+    ? "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    : "Georgia, 'Times New Roman', 'Palatino Linotype', Palatino, serif";
+
+// 6. SEO / structured data
+const canonicalURL = new URL(
+  `/${profile.username}/${log.log_date}`,
+  "https://blog.proveitsme.io"
+).href;
+
+const dateObj = new Date(log.log_date + "T12:00:00");
+const readableDate = dateObj.toLocaleDateString("en-AU", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "Australia/Melbourne",
+});
+const headline = `Day ${dayNumber} of ${totalEntries} — ${readableDate}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline,
+  datePublished: log.log_date,
+  author: { "@type": "Person", name: profile.display_name },
+  url: canonicalURL,
+};
+
+const pageTitle = `${headline} — ${profile.display_name}'s Chronicle`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={headline} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:url" content={canonicalURL} />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(jsonLd)}
+    />
+  </head>
+  <body
+    style={`--accent: ${accentColor}; background: ${bgColor}; color: ${fgColor}; font-family: ${fontFamily};`}
+  >
+    <SiteHeader username={profile.username} />
+
+    <main class="entry-main">
+      <nav class="entry-nav">
+        <a href={`/${profile.username}`} class="entry-nav__back">
+          &larr; {profile.display_name}'s Chronicle
+        </a>
+      </nav>
+
+      <JournalEntry
+        log={log}
+        dayNumber={dayNumber}
+        displayName={profile.display_name}
+        feedbackMap={feedbackMap}
+      />
+
+      <div class="entry-pagination" data-pagefind-ignore>
+        {
+          prevLog && (
+            <a
+              href={`/${profile.username}/${prevLog.log_date}`}
+              class="entry-pagination__link entry-pagination__link--prev"
+            >
+              <span class="entry-pagination__arrow">&larr;</span>
+              <span>
+                <span class="entry-pagination__label">Previous entry</span>
+                <time
+                  datetime={prevLog.log_date}
+                  class="entry-pagination__date"
+                >
+                  {prevLog.log_date}
+                </time>
+              </span>
+            </a>
+          )
+        }
+        {
+          nextLog && (
+            <a
+              href={`/${profile.username}/${nextLog.log_date}`}
+              class="entry-pagination__link entry-pagination__link--next"
+            >
+              <span>
+                <span class="entry-pagination__label">Next entry</span>
+                <time
+                  datetime={nextLog.log_date}
+                  class="entry-pagination__date"
+                >
+                  {nextLog.log_date}
+                </time>
+              </span>
+              <span class="entry-pagination__arrow">&rarr;</span>
+            </a>
+          )
+        }
+      </div>
+    </main>
+
+    <footer class="chronicle-footer">
+      <div class="chronicle-footer__inner">
+        <span>blog.proveitsme.io/{profile.username}</span>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .entry-main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .entry-nav {
+    padding: 24px 0 0;
+  }
+  .entry-nav__back {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    opacity: 0.75;
+    transition: opacity 0.15s;
+  }
+  .entry-nav__back:hover {
+    opacity: 1;
+  }
+  .entry-pagination {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 32px 0 48px;
+    border-top: 0.5px solid color-mix(in srgb, currentColor 14%, transparent);
+    flex-wrap: wrap;
+  }
+  .entry-pagination__link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+    max-width: 48%;
+  }
+  .entry-pagination__link:hover {
+    opacity: 1;
+  }
+  .entry-pagination__link--next {
+    margin-left: auto;
+    text-align: right;
+  }
+  .entry-pagination__arrow {
+    font-size: 18px;
+    flex-shrink: 0;
+    color: var(--accent);
+  }
+  .entry-pagination__label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: ui-monospace, monospace;
+    opacity: 0.6;
+  }
+  .entry-pagination__date {
+    display: block;
+    font-size: 14px;
+    font-family: ui-monospace, monospace;
+    margin-top: 2px;
+  }
+  .chronicle-footer {
+    border-top: 0.5px solid color-mix(in srgb, currentColor 12%, transparent);
+    margin-top: 8px;
+  }
+  .chronicle-footer__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 24px;
+    font-size: 12px;
+    opacity: 0.35;
+    font-family: ui-monospace, monospace;
+  }
+</style>

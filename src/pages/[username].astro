@@ -1,126 +1,215 @@
 ---
-import { supabase } from '../lib/supabase';
-import '../styles/global.css'; // <--- ADD THIS LINE
+import { supabase } from "@/lib/supabase.js";
+import SiteHeader from "@/components/SiteHeader.astro";
+import AthleteHeader from "@/components/AthleteHeader.astro";
+import JournalEntry from "@/components/JournalEntry.astro";
+import type { AnnotationFeedback, Annotation } from "@/components/CoachAnnotation.astro";
+
+export const prerender = false;
+
+interface LogRow {
+  id: string;
+  log_date: string;
+  journal_content: string | null;
+  mood_score: number | null;
+  ms_annotations?: Annotation[] | null;
+}
+
 
 const { username } = Astro.params;
 
-/**
- * 1. DEBUG LOGS
- */
-console.log("--- CHRONICLE ROUTE HIT ---");
-console.log("Param 'username':", username);
-
-// 2. Fetch the User Profile
+// 1. Fetch profile with all blog fields
 const { data: profile, error: profileError } = await supabase
-  .from('ms_profiles')
-  .select('id, display_name, username, about_me')
-  .ilike('username', username || '') 
+  .from("ms_profiles")
+  .select(
+    "id, display_name, username, about_me, avatar_url, blog_accent_color, blog_font, blog_bg, social_links, blog_enabled, display_avatar, display_links"
+  )
+  .ilike("username", username ?? "")
   .single();
 
-if (profileError) {
-    console.error("Supabase Profile Error:", profileError.message);
+// 404 if not found or blog disabled
+if (profileError || !profile || profile.blog_enabled === false) {
+  return new Response(null, { status: 404 });
 }
 
-/**
- * 3. FALLBACK: Debug screen if profile is missing
- */
-if (!profile) {
-  return new Response(`
-    <body style="background: #050505; color: #fff; font-family: sans-serif; padding: 2rem;">
-      <h1 style="color: #ef4444;">404: User Not Found</h1>
-      <p>Astro reached the file successfully, but user "${username}" isn't in 'ms_profiles'.</p>
-      <p style="color: #666; font-size: 0.8rem;">Error: ${profileError?.message || 'None'}</p>
-    </body>
-  `, { status: 404, headers: { 'Content-Type': 'text/html' } });
+// 2. Fetch active sprint and published logs in parallel
+const today = new Date().toISOString().split("T")[0];
+
+const [sprintResult, logsResult] = await Promise.all([
+  supabase
+    .from("ms_sprints")
+    .select("id, sprint_number, title, focus_area, start_date, end_date")
+    .eq("user_id", profile.id)
+    .lte("start_date", today)
+    .gte("end_date", today)
+    .limit(1)
+    .maybeSingle(),
+  supabase
+    .from("ms_daily_logs")
+    .select(
+      `id, log_date, journal_content, mood_score,
+       ms_annotations(
+         id, author_type, author_role, content, persona_id,
+         ms_persona_registry(name, specialty)
+       )`
+    )
+    .eq("user_id", profile.id)
+    .eq("is_published", true)
+    .order("log_date", { ascending: false }),
+]);
+
+const sprint = sprintResult.data ?? null;
+const logs = (logsResult.data ?? []) as LogRow[];
+
+// 3. Batch-fetch annotation feedback for all annotations in one query
+const allAnnotationIds = logs.flatMap((l: LogRow) =>
+  (l.ms_annotations ?? []).map((a) => a.id)
+);
+
+let feedbackMap: Record<string, AnnotationFeedback> = {};
+if (allAnnotationIds.length > 0) {
+  const { data: feedbackRows } = await supabase
+    .from("ms_annotation_feedback")
+    .select("annotation_id, signal, reason_text")
+    .eq("profile_id", profile.id)
+    .in("annotation_id", allAnnotationIds)
+    .order("created_at", { ascending: false });
+
+  if (feedbackRows) {
+    for (const row of feedbackRows) {
+      // Keep only the most recent signal per annotation (rows are desc by created_at)
+      if (!feedbackMap[row.annotation_id]) {
+        feedbackMap[row.annotation_id] = {
+          signal: row.signal,
+          reason_text: row.reason_text,
+        };
+      }
+    }
+  }
 }
 
-// 4. Fetch Logs with explicit join
-const { data: logs, error: _logsError } = await supabase
-  .from('ms_daily_logs')
-  .select(`
-    id, log_date, journal_content, mood_score, is_published,
-    ms_annotations (id, author_role, content, author_type)
-  `)
-  .eq('user_id', profile.id)
-  .eq('is_published', true)
-  .order('log_date', { ascending: false });
+// 4. Compute day numbers (oldest log = day 1, newest = day N)
+const totalEntries = logs.length;
 
-console.log(`Found ${logs?.length || 0} logs for user UUID: ${profile.id}`);
+// 5. Derive CSS vars from profile
+const accentColor = profile.blog_accent_color ?? "#D85A30";
+const bgMap: Record<string, string> = {
+  light: "#ffffff",
+  warm: "#FAF8F4",
+  dark: "#1A1917",
+};
+const fgMap: Record<string, string> = {
+  light: "#1A1917",
+  warm: "#1A1917",
+  dark: "#F5F3EF",
+};
+const blogBg = profile.blog_bg ?? "light";
+const bgColor = bgMap[blogBg] ?? bgMap.light;
+const fgColor = fgMap[blogBg] ?? fgMap.light;
+const fontFamily =
+  profile.blog_font === "sans"
+    ? "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    : "Georgia, 'Times New Roman', 'Palatino Linotype', Palatino, serif";
+
+const canonicalURL = new URL(
+  `/${profile.username}`,
+  "https://blog.proveitsme.io"
+).href;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  name: `${profile.display_name}'s Chronicle`,
+  url: canonicalURL,
+  author: { "@type": "Person", name: profile.display_name },
+};
+
+const pageTitle = `${profile.display_name}'s Chronicle — proveitsme.io`;
+const pageDesc =
+  profile.about_me ?? `${profile.display_name}'s personal chronicle.`;
 ---
 
-<!DOCTYPE html>
-<html lang="en" class="bg-[#050505]">
-<head>
-    <meta charset="UTF-8">
-    <title>{profile.display_name} // Chronicle</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body class="bg-[#050505] text-zinc-400 font-mono selection:bg-red-600/30">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDesc} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
+    <meta property="og:url" content={canonicalURL} />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(jsonLd)}
+    />
+  </head>
+  <body
+    style={`--accent: ${accentColor}; background: ${bgColor}; color: ${fgColor}; font-family: ${fontFamily};`}
+  >
+    <SiteHeader username={profile.username} />
 
-    <nav class="p-6 border-b border-white/5 flex justify-between items-center sticky top-0 bg-[#050505]/90 backdrop-blur-xl z-50">
-        <span class="font-black tracking-tighter text-white text-xl uppercase">Prove It's Me // <span class="text-red-600">Chronicle</span></span>
-        <div class="flex items-center gap-4">
-            <span class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase hidden md:block">Active Session</span>
-            <div class="h-2 w-2 rounded-full bg-red-600 animate-pulse"></div>
-        </div>
-    </nav>
+    <AthleteHeader profile={profile} sprint={sprint} />
 
-    <header class="max-w-4xl mx-auto py-32 px-6 border-x border-white/5 flex flex-col justify-end relative overflow-hidden">
-        <div class="absolute top-0 right-0 p-8 opacity-5 font-black text-9xl select-none uppercase tracking-tighter">
-            {profile.display_name}
-        </div>
-        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-red-600 mb-6 block">Proof of Performance</span>
-        <h1 class="text-7xl md:text-9xl font-black uppercase tracking-tighter text-white leading-[0.85] mb-8">
-            {profile.display_name}
-        </h1>
-        <p class="text-zinc-400 text-xl md:text-2xl max-w-2xl italic border-l-4 border-red-600 pl-8 leading-relaxed">
-            {profile.about_me || "A record of progress and grit."}
-        </p>
-    </header>
-
-    <main class="max-w-4xl mx-auto px-6 border-x border-white/5 pb-40">
-        {logs && logs.length > 0 ? logs.map((log) => (
-            <section class="py-24 border-t border-white/5 first:border-t-0 group">
-                <div class="flex justify-between items-baseline mb-12">
-                    <h2 class="text-5xl font-black text-white uppercase italic tracking-tighter group-hover:text-red-600 transition-colors">
-                        {log.log_date}
-                    </h2>
-                    <div class="flex gap-1.5">
-                        {[...Array(5)].map((_, i) => (
-                            <div class={`h-8 w-1.5 transition-all duration-500 ${i < log.mood_score ? 'bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.5)]' : 'bg-zinc-800'}`}></div>
-                        ))}
-                    </div>
-                </div>
-
-                <div class="prose prose-zinc prose-invert prose-2xl max-w-none 
-                    prose-p:text-zinc-300 prose-p:leading-snug prose-strong:text-white prose-strong:font-black mb-20">
-                    <Fragment set:html={log.journal_content} />
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10 overflow-hidden">
-                    {log.ms_annotations?.filter(a => a.author_type === 'ai').map((anno) => (
-                        <div class="bg-[#050505] p-8 group/card transition-all hover:bg-zinc-900/40">
-                            <span class={`text-[10px] font-black uppercase tracking-[0.2em] mb-6 block transition-colors ${
-                                anno.author_role === 'boxing' ? 'text-red-600 group-hover/card:text-red-500' : 
-                                anno.author_role === 'diet' ? 'text-emerald-500 group-hover/card:text-emerald-400' : 
-                                'text-blue-500 group-hover/card:text-blue-400'
-                            }`}>
-                                {anno.author_role} Coach
-                            </span>
-                            <p class="text-sm leading-relaxed font-medium text-zinc-400 group-hover/card:text-zinc-100 transition-colors italic">
-                                "{anno.content}"
-                            </p>
-                        </div>
-                    ))}
-                </div>
-            </section>
-        )) : (
-            <div class="py-40 text-center opacity-30 flex flex-col items-center gap-6">
-                <div class="h-px w-32 bg-gradient-to-r from-transparent via-white to-transparent"></div>
-                <p class="text-xs uppercase tracking-[0.8em] font-black">Null Synchronization</p>
-                <div class="h-px w-32 bg-gradient-to-r from-transparent via-white to-transparent"></div>
-            </div>
-        )}
+    <main class="chronicle-main">
+      <div class="chronicle-feed">
+        {
+          logs.length > 0 ? (
+            logs.map((log: LogRow, index: number) => {
+              // day 1 = oldest entry, day N = newest
+              const dayNumber = totalEntries - index;
+              return (
+                <JournalEntry
+                  log={log}
+                  dayNumber={dayNumber}
+                  displayName={profile.display_name}
+                  feedbackMap={feedbackMap}
+                />
+              );
+            })
+          ) : (
+            <p class="chronicle-empty">No published entries yet.</p>
+          )
+        }
+      </div>
     </main>
-</body>
+
+    <footer class="chronicle-footer">
+      <div class="chronicle-footer__inner">
+        <span>blog.proveitsme.io/{profile.username}</span>
+      </div>
+    </footer>
+  </body>
 </html>
+
+<style>
+  .chronicle-main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .chronicle-feed {
+    padding-top: 8px;
+  }
+  .chronicle-empty {
+    padding: 48px 0;
+    text-align: center;
+    opacity: 0.4;
+    font-size: 14px;
+  }
+  .chronicle-footer {
+    border-top: 0.5px solid color-mix(in srgb, currentColor 12%, transparent);
+    margin-top: 16px;
+  }
+  .chronicle-footer__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 24px;
+    font-size: 12px;
+    opacity: 0.35;
+    font-family: ui-monospace, monospace;
+  }
+</style>
