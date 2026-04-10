@@ -14,6 +14,11 @@ interface LogRow {
   ms_annotations?: Annotation[] | null;
 }
 
+interface NavLog {
+  id: string;
+  log_date: string;
+}
+
 const { username, date } = Astro.params;
 
 // 1. Fetch profile with blog fields
@@ -58,9 +63,9 @@ const { data: allLogs } = await supabase
   .eq("is_published", true)
   .order("log_date", { ascending: false });
 
-const sortedLogs = allLogs ?? [];
+const sortedLogs = (allLogs ?? []) as NavLog[];
 const totalEntries = sortedLogs.length;
-const currentIndex = sortedLogs.findIndex((l) => l.id === log.id);
+const currentIndex = sortedLogs.findIndex((l: NavLog) => l.id === log.id);
 const dayNumber = totalEntries - currentIndex;
 
 const prevLog = currentIndex < totalEntries - 1 ? sortedLogs[currentIndex + 1] : null;
@@ -116,7 +121,7 @@ const canonicalURL = new URL(
   "https://blog.proveitsme.io"
 ).href;
 
-const dateObj = new Date(log.log_date + "T12:00:00");
+const dateObj = new Date(`${log.log_date ?? date}T12:00:00`);
 const readableDate = dateObj.toLocaleDateString("en-AU", {
   day: "numeric",
   month: "long",
