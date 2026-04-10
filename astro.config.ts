@@ -2,10 +2,8 @@ import { defineConfig } from "astro/config";
 import path from "path";
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
-import sitemap from "@astrojs/sitemap";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
-import { SITE } from "./src/config.js";
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,11 +21,7 @@ export default defineConfig({
     host: true, // Accessible across your network
   },
 
-  integrations: [
-    sitemap({
-      filter: (page) => SITE.showArchives || !page.endsWith("/archives"),
-    }),
-  ],
+  integrations: [],
 
   markdown: {
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
