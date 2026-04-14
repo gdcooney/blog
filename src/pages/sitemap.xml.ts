@@ -7,14 +7,14 @@ export const GET: APIRoute = async () => {
   // Fetch all public profiles — must use service role key, anon key returns nothing due to RLS
   const { data: profiles } = await supabaseServer
     .from("ms_profiles")
-    .select("id, username, updated_at")
+    .select("id, username, created_at")
     .eq("blog_enabled", true);
 
   const urls: string[] = [];
 
   for (const profile of profiles ?? []) {
     const profileUrl = `${BASE}/${profile.username}`;
-    const profileMod = (profile.updated_at ?? "").slice(0, 10);
+    const profileMod = (profile.created_at ?? "").slice(0, 10);
 
     urls.push(`
   <url>
