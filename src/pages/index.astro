@@ -1,45 +1,452 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Footer from "../components/Footer.astro";
-import { supabase } from "../lib/supabase";
+import { supabaseServer } from "@/lib/supabase-server.js";
 
-// Force SSR mode so we fetch fresh from the DB [cite: 64]
-export const prerender = false; 
+export const prerender = false;
 
-// Fetch your published logs from HQ [cite: 65]
-const { data: logs } = await supabase
-  .from("ms_daily_logs")
-  .select("log_date, mood_score, journal_content")
-  .eq("is_published", true)
-  .order("log_date", { ascending: false });
+function stripHtml(html: string | null): string {
+  if (!html) return "";
+  return html.replace(/<[^>]*>/g, "").trim();
+}
+
+function teaser(html: string | null, max = 120): string {
+  const text = stripHtml(html);
+  return text.length > max ? text.slice(0, max) + "..." : text;
+}
+
+function truncate(str: string | null, max: number): string {
+  if (!str) return "";
+  return str.length > max ? str.slice(0, max) + "..." : str;
+}
+
+function formatShortDate(dateStr: string): string {
+  const [, month, day] = dateStr.split("-").map(Number);
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${months[month - 1]} ${day}`;
+}
+
+const { data: profiles } = await supabaseServer
+  .from("ms_profiles")
+  .select("id, username, display_name, about_me, avatar_url, blog_accent_color, blog_bg, blog_font, display_avatar, social_links")
+  .eq("blog_enabled", true)
+  .order("created_at", { ascending: true });
+
+const profileList = profiles ?? [];
+
+const logsResults = await Promise.all(
+  profileList.map((p) =>
+    supabaseServer
+      .from("ms_daily_logs")
+      .select("id, log_date, journal_content, mood_score")
+      .eq("user_id", p.id)
+      .eq("is_published", true)
+      .order("log_date", { ascending: false })
+      .limit(5)
+  )
+);
+
+const profilesWithLogs = profileList.map((p, i) => ({
+  ...p,
+  logs: logsResults[i].data ?? [],
+  accent: p.blog_accent_color ?? "#D85A30",
+}));
 ---
 
-<Layout>
-  <main id="main-content" class="max-w-3xl mx-auto px-4 py-12">
-    <section id="hero" class="mb-12">
-      <h1 class="text-4xl font-black italic uppercase tracking-tighter">The Proof</h1>
-      <p class="text-zinc-500 mt-2 italic">No theory. Just the work. [cite: 66, 67]</p>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>proveItsMe.io</title>
+    <meta name="description" content="A directory of personal chronicles. Real work, documented." />
+    <meta property="og:title" content="proveItsMe.io" />
+    <meta property="og:description" content="A directory of personal chronicles. Real work, documented." />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <span class="site-header__wordmark">proveItsMe.io</span>
+        <nav class="site-header__nav">
+          <a href="#about">About</a>
+          <a href="mailto:info@proveitsme.io" aria-label="Email" class="site-header__email">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero__inner">
+        <h1 class="hero__wordmark">proveItsMe.io</h1>
+      </div>
     </section>
 
-    <ul class="space-y-12">
-      {logs && logs.length > 0 ? (
-        logs.map((log) => (
-          <li class="border-t border-zinc-800 pt-8">
-            <div class="flex justify-between items-baseline mb-2">
-              <a href={`/log/${log.log_date}`} class="text-2xl font-bold hover:text-orange-500 transition-colors">
-                {log.log_date} [cite: 68]
-              </a>
-              <span class="text-sm font-mono text-zinc-500">MOOD: {log.mood_score}/5 [cite: 69]</span>
+    <main class="directory">
+      {profilesWithLogs.map((profile, idx) => {
+        const showAvatar = profile.display_avatar !== false;
+        const hasAvatar = showAvatar && !!profile.avatar_url;
+        const hasInitials = showAvatar && !profile.avatar_url;
+        const initial = (profile.display_name ?? "?").charAt(0).toUpperCase();
+        const aboutSnippet = truncate(profile.about_me, 80);
+
+        return (
+          <article class="user-card" style={idx > 0 ? "border-top: 1px solid #2E2C2A;" : ""}>
+            <div class="user-card__accent" style={`background: ${profile.accent};`}></div>
+            <div class="user-card__content">
+
+              <div class="user-card__top">
+                {hasAvatar && (
+                  <img
+                    src={profile.avatar_url!}
+                    alt={profile.display_name ?? ""}
+                    class="user-card__avatar-img"
+                    width="40"
+                    height="40"
+                  />
+                )}
+                {hasInitials && (
+                  <div
+                    class="user-card__avatar-initials"
+                    style={`background: color-mix(in srgb, ${profile.accent} 15%, transparent); color: ${profile.accent};`}
+                    aria-hidden="true"
+                  >
+                    {initial}
+                  </div>
+                )}
+                <div class="user-card__identity">
+                  <span class="user-card__name">{profile.display_name}</span>
+                  {aboutSnippet && (
+                    <span class="user-card__about">{aboutSnippet}</span>
+                  )}
+                </div>
+              </div>
+
+              <div class="user-card__links">
+                <a href={`/${profile.username}`} class="user-card__read" style={`color: ${profile.accent};`}>
+                  Read &rarr;
+                </a>
+                <a href={`/rss/${profile.username}.xml`} class="user-card__rss" style={`color: ${profile.accent};`}>
+                  RSS
+                </a>
+              </div>
+
+              <div class="user-card__posts">
+                {profile.logs.length > 0 ? (
+                  profile.logs.map((log) => (
+                    <a
+                      href={`/${profile.username}/${log.log_date}`}
+                      class="teaser-card"
+                      style={`border-top: 2px solid ${profile.accent};`}
+                    >
+                      <div class="teaser-card__meta">
+                        <span class="teaser-card__date">{formatShortDate(log.log_date)}</span>
+                        {log.mood_score != null && (
+                          <span class="teaser-card__mood">{log.mood_score}/5</span>
+                        )}
+                      </div>
+                      <p class="teaser-card__text">{teaser(log.journal_content)}</p>
+                    </a>
+                  ))
+                ) : (
+                  <div class="teaser-card teaser-card--empty">
+                    <p class="teaser-card__text">No posts yet.</p>
+                  </div>
+                )}
+              </div>
+
             </div>
-            <div class="prose prose-invert line-clamp-2 text-zinc-400" set:html={log.journal_content} />
-          </li>
-        ))
-      ) : (
-        <p class="text-zinc-600 italic text-center py-20 border-2 border-dashed border-zinc-900 rounded-lg">
-          HQ connection active. Waiting for the first synced log... [cite: 69, 70]
+          </article>
+        );
+      })}
+    </main>
+
+    <section id="about" class="about-section">
+      <div class="about-section__inner">
+        <p class="about-section__label">About</p>
+        <p class="about-section__body">
+          proveItsMe.io is a personal chronicles platform. Each feed is one person&rsquo;s documented
+          attempt to do something hard &mdash; build something, train for something, figure something out.
+          No theory. Just the record of the work.
         </p>
-      )}
-    </ul>
-  </main>
-  <Footer />
-</Layout>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <span>&copy; 2026 proveItsMe.io</span>
+        <a href="mailto:info@proveitsme.io">info@proveitsme.io</a>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: #1A1917;
+    color: #F5F0EB;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Header */
+  .site-header {
+    border-bottom: 0.5px solid #2E2C2A;
+  }
+  .site-header__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .site-header__wordmark {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #F5F0EB;
+    letter-spacing: -0.01em;
+  }
+  .site-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .site-header__nav a {
+    color: #9A9590;
+    text-decoration: none;
+    font-size: 13px;
+  }
+  .site-header__nav a:hover {
+    color: #F5F0EB;
+  }
+  .site-header__email {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 60px 0 48px;
+  }
+  .hero__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .hero__wordmark {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(48px, 8vw, 80px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: #F5F0EB;
+  }
+
+  /* Directory */
+  .directory {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* User card */
+  .user-card {
+    display: flex;
+    padding: 32px 0;
+    gap: 0;
+  }
+  .user-card__accent {
+    width: 3px;
+    flex-shrink: 0;
+    border-radius: 0;
+    align-self: stretch;
+    margin-right: 20px;
+  }
+  .user-card__content {
+    flex: 1;
+    min-width: 0;
+  }
+  .user-card__top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .user-card__avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .user-card__avatar-initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: Georgia, serif;
+    flex-shrink: 0;
+  }
+  .user-card__identity {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .user-card__name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: #F5F0EB;
+  }
+  .user-card__about {
+    font-size: 13px;
+    color: #9A9590;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Links row */
+  .user-card__links {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  .user-card__read,
+  .user-card__rss {
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .user-card__read:hover,
+  .user-card__rss:hover {
+    text-decoration: underline;
+  }
+
+  /* Post preview scroll */
+  .user-card__posts {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #2E2C2A transparent;
+    padding-bottom: 4px;
+  }
+  .user-card__posts::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Teaser cards */
+  .teaser-card {
+    flex-shrink: 0;
+    width: 220px;
+    padding: 12px 14px;
+    background: #222019;
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .teaser-card:hover {
+    background: #27251F;
+  }
+  .teaser-card--empty {
+    cursor: default;
+  }
+  .teaser-card--empty:hover {
+    background: #222019;
+  }
+  .teaser-card__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .teaser-card__date {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9A9590;
+    font-family: ui-monospace, monospace;
+  }
+  .teaser-card__mood {
+    font-size: 11px;
+    color: #9A9590;
+    font-family: ui-monospace, monospace;
+  }
+  .teaser-card__text {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #9A9590;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* About section */
+  .about-section {
+    margin-top: 48px;
+    border-top: 0.5px solid #2E2C2A;
+    padding: 40px 0;
+  }
+  .about-section__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .about-section__label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9A9590;
+    margin: 0 0 12px;
+  }
+  .about-section__body {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #9A9590;
+    margin: 0;
+    max-width: 560px;
+  }
+
+  /* Footer */
+  .site-footer {
+    border-top: 0.5px solid #2E2C2A;
+  }
+  .site-footer__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #9A9590;
+  }
+  .site-footer a {
+    color: #9A9590;
+    text-decoration: none;
+  }
+  .site-footer a:hover {
+    color: #F5F0EB;
+  }
+</style>

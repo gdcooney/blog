@@ -1,4 +1,6 @@
 ---
+import { formatAnnotation } from "@/utils/annotationFormatter.js";
+
 export interface AnnotationFeedback {
   signal: string;
   reason_text?: string | null;
@@ -25,6 +27,8 @@ const persona = annotation.ms_persona_registry ?? null;
 const coachName = persona?.display_name || annotation.author_role || "Coach";
 const specialty = persona?.specialty || annotation.author_role || null;
 const initial = coachName.charAt(0).toUpperCase();
+
+const bodyHtml = formatAnnotation(annotation.content);
 ---
 
 <div class="coach-annotation">
@@ -37,7 +41,7 @@ const initial = coachName.charAt(0).toUpperCase();
       )}
     </div>
   </div>
-  <p class="coach-annotation__body">&ldquo;{annotation.content}&rdquo;</p>
+  <div class="coach-annotation__body" set:html={bodyHtml} />
   {feedback && (
     <p class="coach-annotation__feedback">
       {feedback.signal === "up" && `↑ ${displayName} found this advice useful.`}
@@ -87,6 +91,12 @@ const initial = coachName.charAt(0).toUpperCase();
     font-size: 14px;
     line-height: 1.65;
     margin: 0 0 6px;
+  }
+  .coach-annotation__body :global(p) {
+    margin: 0 0 6px;
+  }
+  .coach-annotation__body :global(p:last-child) {
+    margin-bottom: 0;
   }
   .coach-annotation__feedback {
     font-size: 12px;
