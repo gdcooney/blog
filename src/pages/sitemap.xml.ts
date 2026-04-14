@@ -1,11 +1,11 @@
 import type { APIRoute } from "astro";
-import { supabase } from "@/lib/supabase.js";
+import { supabaseServer } from "@/lib/supabase-server.js";
 
 const BASE = "https://blog.proveitsme.io";
 
 export const GET: APIRoute = async () => {
-  // Fetch all public profiles
-  const { data: profiles } = await supabase
+  // Fetch all public profiles — must use service role key, anon key returns nothing due to RLS
+  const { data: profiles } = await supabaseServer
     .from("ms_profiles")
     .select("id, username, updated_at")
     .eq("blog_enabled", true);
@@ -24,7 +24,7 @@ export const GET: APIRoute = async () => {
   </url>`);
 
     // Fetch published entries for this profile
-    const { data: entries } = await supabase
+    const { data: entries } = await supabaseServer
       .from("ms_daily_logs")
       .select("log_date, updated_at")
       .eq("is_published", true)
