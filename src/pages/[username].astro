@@ -117,17 +117,18 @@ const canonicalURL = new URL(
   "https://blog.proveitsme.io"
 ).href;
 
+const pageTitle = `${profile.display_name}'s Chronicle — proveitsme.io`;
+const pageDesc =
+  profile.about_me ?? `${profile.display_name}'s personal chronicle.`;
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Blog",
   name: `${profile.display_name}'s Chronicle`,
   url: canonicalURL,
+  description: pageDesc,
   author: { "@type": "Person", name: profile.display_name },
 };
-
-const pageTitle = `${profile.display_name}'s Chronicle — proveitsme.io`;
-const pageDesc =
-  profile.about_me ?? `${profile.display_name}'s personal chronicle.`;
 ---
 
 <!doctype html>
@@ -139,9 +140,11 @@ const pageDesc =
     <link rel="canonical" href={canonicalURL} />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDesc} />
+    <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDesc} />
     <meta property="og:url" content={canonicalURL} />
+    <link rel="alternate" type="application/rss+xml" title={`${profile.display_name}'s Chronicle`} href={`/rss/${profile.username}.xml`} />
     <script
       type="application/ld+json"
       is:inline

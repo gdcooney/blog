@@ -1,0 +1,24 @@
+# proveItsMe.io
+
+> A directory of personal chronicles. Each feed is one person's documented attempt to do something hard — build something, train for something, figure something out. No theory. Just the record of the work.
+
+## About
+
+proveItsMe.io is a personal chronicles platform where individuals publish daily training, work, and learning logs. Content is written by real people documenting real effort over time.
+
+## User Feeds
+
+Each user has their own chronicle at https://blog.proveitsme.io/[username]
+
+Individual entries are at https://blog.proveitsme.io/[username]/[YYYY-MM-DD]
+
+## Discovery
+
+- [Sitemap](https://blog.proveitsme.io/sitemap.xml): All public profile and entry URLs
+- [Global RSS](https://blog.proveitsme.io/rss.xml): Site-wide feed
+
+## Content Notes
+
+- All content is published voluntarily by users
+- Entries are dated daily logs in HTML format
+- Content reflects personal effort logs, not advice or authoritative information

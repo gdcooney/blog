@@ -57,10 +57,20 @@ const profilesWithLogs = profileList.map((p, i) => ({
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://blog.proveitsme.io/" />
     <title>proveItsMe.io</title>
     <meta name="description" content="A directory of personal chronicles. Real work, documented." />
+    <meta property="og:type" content="website" />
     <meta property="og:title" content="proveItsMe.io" />
     <meta property="og:description" content="A directory of personal chronicles. Real work, documented." />
+    <meta property="og:url" content="https://blog.proveitsme.io/" />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "proveItsMe.io",
+      "url": "https://blog.proveitsme.io/",
+      "description": "A directory of personal chronicles. Real work, documented."
+    })} />
   </head>
   <body>
     <header class="site-header">

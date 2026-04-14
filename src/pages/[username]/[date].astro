@@ -130,10 +130,15 @@ const readableDate = dateObj.toLocaleDateString("en-AU", {
 });
 const headline = `Day ${dayNumber} of ${totalEntries} — ${readableDate}`;
 
+const metaDescription = log.journal_content
+  ? log.journal_content.replace(/<[^>]*>/g, "").trim().slice(0, 160)
+  : headline;
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   headline,
+  description: metaDescription,
   datePublished: log.log_date,
   author: { "@type": "Person", name: profile.display_name },
   url: canonicalURL,
@@ -150,9 +155,13 @@ const pageTitle = `${headline} — ${profile.display_name}'s Chronicle`;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonicalURL} />
     <title>{pageTitle}</title>
-    <meta name="description" content={headline} />
+    <meta name="description" content={metaDescription} />
+    <meta property="og:type" content="article" />
     <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonicalURL} />
+    <meta property="article:published_time" content={log.log_date} />
+    <link rel="alternate" type="application/rss+xml" title={`${profile.display_name}'s Chronicle`} href={`/rss/${profile.username}.xml`} />
     <script
       type="application/ld+json"
       is:inline
